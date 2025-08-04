@@ -65,19 +65,19 @@ export default function DashboardLayout({
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href="#">
+              <SidebarMenuButton href="/dashboard/projects">
                 <Briefcase />
                 All Projects
               </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
-              <SidebarMenuButton href="#">
+              <SidebarMenuButton href="/dashboard/clients">
                 <Users />
                 Clients
               </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
-              <SidebarMenuButton href="#">
+              <SidebarMenuButton href="/dashboard/settings">
                 <Settings />
                 Settings
               </SidebarMenuButton>
@@ -91,7 +91,7 @@ export default function DashboardLayout({
             <SidebarMenu>
                 {clients.map(client => (
                     <SidebarMenuItem key={client.id}>
-                        <SidebarMenuButton>
+                        <SidebarMenuButton href={`/dashboard/clients/${client.id}`}>
                             <Image src={client.logo} alt={client.name} width={20} height={20} className="rounded-full" data-ai-hint="logo" />
                             {client.name}
                         </SidebarMenuButton>

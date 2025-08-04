@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import { Slot } from "@radix-ui/react-slot"
 import { VariantProps, cva } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
@@ -323,7 +324,7 @@ const SidebarInset = React.forwardRef<
       ref={ref}
       className={cn(
         "relative flex min-h-svh flex-1 flex-col bg-background",
-        "md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+        "md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)] md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
         className
       )}
       {...props}
@@ -373,7 +374,7 @@ const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-2", className)}
+      className={cn("mt-auto flex flex-col gap-2 p-2", className)}
       {...props}
     />
   )
@@ -538,6 +539,7 @@ const SidebarMenuButton = React.forwardRef<
   React.ComponentProps<"button"> & {
     asChild?: boolean
     isActive?: boolean
+    href?: string;
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
   } & VariantProps<typeof sidebarMenuButtonVariants>
 >(
@@ -549,16 +551,17 @@ const SidebarMenuButton = React.forwardRef<
       size = "default",
       tooltip,
       className,
+      href,
       ...props
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : href ? "a" : "button"
     const { isMobile, state } = useSidebar()
 
     const button = (
-      <Comp
-        ref={ref}
+       <Comp
+        ref={ref as any}
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
@@ -566,9 +569,12 @@ const SidebarMenuButton = React.forwardRef<
         {...props}
       />
     )
+    
+    const content = href ? <Link href={href} legacyBehavior passHref>{button}</Link> : button;
+
 
     if (!tooltip) {
-      return button
+      return content
     }
 
     if (typeof tooltip === "string") {
@@ -579,7 +585,7 @@ const SidebarMenuButton = React.forwardRef<
 
     return (
       <Tooltip>
-        <TooltipTrigger asChild>{button}</TooltipTrigger>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
         <TooltipContent
           side="right"
           align="center"
