@@ -7,6 +7,7 @@ import {
   Briefcase,
   ChevronDown,
   Home,
+  Menu,
   Settings,
   Upload,
   Users,
@@ -38,6 +39,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { clients, projects } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 export default function DashboardLayout({
   children,
@@ -110,6 +112,15 @@ export default function DashboardLayout({
         </SidebarFooter>
       </Sidebar>
       <SidebarInset>
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+            <SidebarTrigger className="sm:hidden" />
+            <div className="flex items-center gap-2 sm:hidden">
+              <Activity className="h-6 w-6 text-primary" />
+              <span className="font-headline text-lg font-semibold">
+                SEO Clarity
+              </span>
+            </div>
+        </header>
         {children}
       </SidebarInset>
     </SidebarProvider>
