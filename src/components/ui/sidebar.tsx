@@ -562,20 +562,20 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : "button"
     
     const content = href ? (
-      <Link
-        ref={ref as any}
+       <Link
+        ref={ref as React.Ref<HTMLAnchorElement>}
         href={href}
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
         className={cn(sidebarMenuButtonVariants({ variant, size, className }))}
-        {...(props as any)}
+        {...(props as Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href">)}
       >
         {children}
       </Link>
     ) : (
       <Comp
-        ref={ref as any}
+        ref={ref}
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
