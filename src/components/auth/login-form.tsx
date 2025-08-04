@@ -20,12 +20,12 @@ export function LoginForm() {
 
   const handleAgencyLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/dashboard");
+    router.push("/otp?redirect=/dashboard");
   };
 
   const handleClientLogin = (e: React.MouseEvent) => {
     e.preventDefault();
-    router.push("/client-dashboard");
+    router.push("/otp?redirect=/client-dashboard");
   }
 
   return (
