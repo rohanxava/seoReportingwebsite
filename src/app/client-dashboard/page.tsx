@@ -7,6 +7,7 @@ import { TopPages } from "@/components/dashboard/top-pages";
 import { BacklinksOverview } from "@/components/dashboard/backlinks-overview";
 import { kpiData } from "@/lib/data";
 import { BarChart, Users, LineChart, CheckCircle } from "lucide-react";
+import { CompetitorAnalysis } from "@/components/dashboard/competitor-analysis";
 
 export default function ClientDashboardPage() {
   return (
@@ -53,9 +54,10 @@ export default function ClientDashboardPage() {
         </div>
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
           <KeywordRankings />
-          <TopPages />
+          <CompetitorAnalysis />
         </div>
-        <div className="grid gap-4 md:gap-8">
+        <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
+          <TopPages />
           <BacklinksOverview />
         </div>
       </main>

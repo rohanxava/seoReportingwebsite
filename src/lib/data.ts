@@ -13,10 +13,10 @@ export const projects = [
 ];
 
 export const kpiData = {
-  sessions: { value: "12,450", change: "+15.2%", changeType: "positive" },
-  bounceRate: { value: "48.3%", change: "-3.1%", changeType: "positive" },
-  conversions: { value: "620", change: "+8.9%", changeType: "positive" },
-  ranking: { value: "#8", change: "+2", changeType: "positive" },
+  sessions: { value: "12,450", change: "+15.2%", changeType: "positive" as const },
+  bounceRate: { value: "48.3%", change: "-3.1%", changeType: "positive" as const },
+  conversions: { value: "620", change: "+8.9%", changeType: "positive" as const },
+  ranking: { value: "#8", change: "+2", changeType: "positive" as const },
 };
 
 export const trafficOverviewData = [
@@ -68,3 +68,10 @@ export const backlinksData = {
   lost: 8,
   toxic: 3,
 };
+
+export const competitorData = [
+    { name: "Competitor A", avgRanking: 5, domain: "competitor-a.com" },
+    { name: "Competitor B", avgRanking: 10, domain: "competitor-b.com" },
+    { name: "Competitor C", avgRanking: 12, domain: "competitor-c.com" },
+    { name: "Competitor D", avgRanking: 18, domain: "competitor-d.com" },
+]
