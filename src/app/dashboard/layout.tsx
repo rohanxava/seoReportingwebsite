@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Activity,
   Briefcase,
@@ -43,6 +44,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
   return (
     <SidebarProvider>
       <Sidebar>
@@ -59,25 +61,25 @@ export default function DashboardLayout({
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton href="/dashboard" isActive>
+              <SidebarMenuButton href="/dashboard" isActive={pathname === '/dashboard'}>
                 <Home />
                 Dashboard
               </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
-              <SidebarMenuButton href="/dashboard/projects">
+              <SidebarMenuButton href="/dashboard/projects" isActive={pathname.startsWith('/dashboard/projects')}>
                 <Briefcase />
                 All Projects
               </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
-              <SidebarMenuButton href="/dashboard/clients">
+              <SidebarMenuButton href="/dashboard/clients" isActive={pathname.startsWith('/dashboard/clients')}>
                 <Users />
                 Clients
               </SidebarMenuButton>
             </SidebarMenuItem>
              <SidebarMenuItem>
-              <SidebarMenuButton href="/dashboard/settings">
+              <SidebarMenuButton href="/dashboard/settings" isActive={pathname === '/dashboard/settings'}>
                 <Settings />
                 Settings
               </SidebarMenuButton>
@@ -91,7 +93,7 @@ export default function DashboardLayout({
             <SidebarMenu>
                 {clients.map(client => (
                     <SidebarMenuItem key={client.id}>
-                        <SidebarMenuButton href={`/dashboard/clients/${client.id}`}>
+                        <SidebarMenuButton href={`/dashboard/clients/${client.id}`} isActive={pathname === `/dashboard/clients/${client.id}`}>
                             <Image src={client.logo} alt={client.name} width={20} height={20} className="rounded-full" data-ai-hint="logo" />
                             {client.name}
                         </SidebarMenuButton>

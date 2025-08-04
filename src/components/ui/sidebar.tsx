@@ -323,7 +323,7 @@ const SidebarInset = React.forwardRef<
     <main
       ref={ref}
       className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background",
+        "relative flex min-h-svh flex-1 flex-col",
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)] md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
         className
       )}
@@ -552,25 +552,28 @@ const SidebarMenuButton = React.forwardRef<
       tooltip,
       className,
       href,
+      children,
       ...props
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : href ? "a" : "button"
+    const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
-
-    const button = (
-       <Comp
+    
+    const buttonContent = (
+      <Comp
         ref={ref as any}
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
         className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
         {...props}
-      />
-    )
-    
-    const content = href ? <Link href={href} legacyBehavior passHref>{button}</Link> : button;
+      >
+        {children}
+      </Comp>
+    );
+
+    const content = href ? <Link href={href} passHref legacyBehavior>{buttonContent}</Link> : buttonContent;
 
 
     if (!tooltip) {
