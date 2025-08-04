@@ -19,9 +19,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "next-themes";
 
 export default function SettingsPage() {
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
 
   const handleSaveChanges = () => {
     toast({
@@ -42,15 +44,15 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
-            <Input id="name" placeholder="Your Name" readOnly />
+            <Input id="name" defaultValue="Agency Admin" />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="your@email.com" readOnly />
+            <Input id="email" type="email" defaultValue="agency@example.com" />
           </div>
            <div className="space-y-2">
             <Label htmlFor="theme">Theme</Label>
-             <Select defaultValue="system">
+             <Select value={theme} onValueChange={setTheme}>
                 <SelectTrigger id="theme">
                   <SelectValue placeholder="Select theme" />
                 </SelectTrigger>
