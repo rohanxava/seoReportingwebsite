@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { projects, clients } from "@/lib/data";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { PlusCircle } from "lucide-react";
 
 export default function ProjectsPage() {
   const getClientName = (clientId: string) => {
@@ -24,11 +27,19 @@ export default function ProjectsPage() {
   return (
     <div className="p-4 md:p-8">
       <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">All Projects</CardTitle>
-          <CardDescription>
-            A list of all SEO projects you are managing.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle className="font-headline">All Projects</CardTitle>
+            <CardDescription>
+              A list of all SEO projects you are managing.
+            </CardDescription>
+          </div>
+           <Button asChild>
+            <Link href="/dashboard/projects/new">
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Project
+            </Link>
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="hidden md:block">
