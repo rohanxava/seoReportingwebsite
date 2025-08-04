@@ -20,10 +20,17 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function SettingsPage() {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
 
   const handleSaveChanges = () => {
     toast({
@@ -31,6 +38,10 @@ export default function SettingsPage() {
       description: "Your changes have been successfully saved.",
     });
   };
+
+  const handleThemeChange = (value: string) => {
+    setTheme(value);
+  }
 
   return (
     <div className="p-4 md:p-8">
@@ -44,15 +55,16 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
-            <Input id="name" defaultValue="Agency Admin" />
+            <Input id="name" defaultValue="Agency Admin" readOnly />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" defaultValue="agency@example.com" />
+            <Input id="email" type="email" defaultValue="agency@example.com" readOnly />
           </div>
            <div className="space-y-2">
             <Label htmlFor="theme">Theme</Label>
-             <Select value={theme} onValueChange={setTheme}>
+            {mounted && (
+             <Select value={theme} onValueChange={handleThemeChange}>
                 <SelectTrigger id="theme">
                   <SelectValue placeholder="Select theme" />
                 </SelectTrigger>
@@ -62,6 +74,7 @@ export default function SettingsPage() {
                   <SelectItem value="system">System</SelectItem>
                 </SelectContent>
               </Select>
+            )}
           </div>
           <Button onClick={handleSaveChanges}>Save Changes</Button>
         </CardContent>
