@@ -18,12 +18,15 @@ import { Label } from "@/components/ui/label";
 export function LoginForm() {
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleAgencyLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd handle authentication here.
-    // For now, we'll just navigate to the dashboard.
     router.push("/dashboard");
   };
+
+  const handleClientLogin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    router.push("/client-dashboard");
+  }
 
   return (
     <Card className="w-full max-w-sm">
@@ -37,7 +40,7 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleLogin} className="grid gap-4">
+        <form onSubmit={handleAgencyLogin} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -63,7 +66,7 @@ export function LoginForm() {
           <Button type="submit" className="w-full">
             Sign In
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" onClick={handleClientLogin}>
             Sign in as Client
           </Button>
         </form>
