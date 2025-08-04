@@ -31,28 +31,45 @@ export default function ProjectsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Project Name</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Domain</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {projects.map((project) => (
-                <TableRow key={project.id}>
-                  <TableCell className="font-medium">{project.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">
-                      {getClientName(project.clientId)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{project.domain}</TableCell>
+          <div className="hidden md:block">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Project Name</TableHead>
+                  <TableHead>Client</TableHead>
+                  <TableHead>Domain</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {projects.map((project) => (
+                  <TableRow key={project.id}>
+                    <TableCell className="font-medium">{project.name}</TableCell>
+                    <TableCell>
+                      <Badge variant="outline">
+                        {getClientName(project.clientId)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{project.domain}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+          <div className="md:hidden space-y-4">
+            {projects.map((project) => (
+              <Card key={project.id}>
+                <CardHeader>
+                    <CardTitle className="text-lg">{project.name}</CardTitle>
+                    <CardDescription>{project.domain}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Badge variant="outline">
+                        {getClientName(project.clientId)}
+                  </Badge>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>

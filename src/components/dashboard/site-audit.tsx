@@ -14,7 +14,7 @@ const ProgressCircle = ({ score }: { score: number }) => {
 
   return (
     <div className="relative flex items-center justify-center">
-      <svg className="h-32 w-32 transform -rotate-90" >
+      <svg className="h-28 w-28 md:h-32 md:w-32 transform -rotate-90" >
         <circle
           className="text-muted"
           strokeWidth="10"
@@ -37,7 +37,7 @@ const ProgressCircle = ({ score }: { score: number }) => {
           cy="64"
         />
       </svg>
-      <span className="absolute text-3xl font-bold font-headline">{score}</span>
+      <span className="absolute text-2xl md:text-3xl font-bold font-headline">{score}</span>
     </div>
   );
 };

@@ -25,24 +25,26 @@ export function TopPages() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Page Path</TableHead>
-              <TableHead className="text-right">Sessions</TableHead>
-              <TableHead className="text-right">Conversion Rate</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {topPagesData.map((page) => (
-              <TableRow key={page.path}>
-                <TableCell className="font-medium truncate max-w-xs">{page.path}</TableCell>
-                <TableCell className="text-right">{page.sessions.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{page.conversionRate}</TableCell>
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Page Path</TableHead>
+                <TableHead className="text-right">Sessions</TableHead>
+                <TableHead className="text-right">Conversion Rate</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {topPagesData.map((page) => (
+                <TableRow key={page.path}>
+                  <TableCell className="font-medium truncate max-w-48 md:max-w-xs">{page.path}</TableCell>
+                  <TableCell className="text-right">{page.sessions.toLocaleString()}</TableCell>
+                  <TableCell className="text-right">{page.conversionRate}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </CardContent>
     </Card>
   );

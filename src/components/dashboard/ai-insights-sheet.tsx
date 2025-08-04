@@ -38,6 +38,7 @@ import {
   SuggestContentImprovementsOutput,
 } from "@/ai/flows/suggest-content-improvements";
 import { Card, CardContent } from "../ui/card";
+import { ScrollArea } from "../ui/scroll-area";
 
 const keywordSchema = z.object({
   domain: z.string().min(1, "Domain is required."),
@@ -120,7 +121,8 @@ export function AiInsightsSheet() {
       <SheetTrigger asChild>
         <Button>
           <Sparkles className="mr-2 h-4 w-4" />
-          AI Insights
+          <span className="hidden md:inline">AI Insights</span>
+          <span className="md:hidden">AI</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-lg">
@@ -130,134 +132,136 @@ export function AiInsightsSheet() {
             Get suggestions for keywords and content improvements.
           </SheetDescription>
         </SheetHeader>
-        <div className="py-4">
-          <Tabs defaultValue="keywords">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="keywords">Keywords</TabsTrigger>
-              <TabsTrigger value="content">Content</TabsTrigger>
-            </TabsList>
-            <TabsContent value="keywords">
-              <Card>
-                <CardContent className="pt-6">
-                  <Form {...keywordForm}>
-                    <form
-                      onSubmit={keywordForm.handleSubmit(onKeywordSubmit)}
-                      className="space-y-4"
-                    >
-                      <FormField
-                        control={keywordForm.control}
-                        name="domain"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Domain</FormLabel>
-                            <FormControl>
-                              <Input placeholder="example.com" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={keywordForm.control}
-                        name="currentKeywords"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Current Keywords (comma-separated)</FormLabel>
-                            <FormControl>
-                              <Input placeholder="seo, marketing" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={keywordForm.control}
-                        name="projectGoals"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Project Goals</FormLabel>
-                            <FormControl>
-                              <Textarea placeholder="Describe your goals" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="submit" disabled={loading} className="w-full">
-                        {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-                        Suggest Keywords
-                      </Button>
-                    </form>
-                  </Form>
-                  {keywordResult && (
-                    <div className="mt-6">
-                      <h3 className="font-semibold font-headline">Suggestions:</h3>
-                      <p className="text-sm text-muted-foreground mb-2">{keywordResult.reasoning}</p>
-                      <ul className="list-disc list-inside space-y-1 rounded-md border p-4 text-sm">
-                        {keywordResult.suggestedKeywords.map((kw) => (
-                          <li key={kw}>{kw}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="content">
-              <Card>
-                <CardContent className="pt-6">
-                   <Form {...contentForm}>
-                    <form
-                      onSubmit={contentForm.handleSubmit(onContentSubmit)}
-                      className="space-y-4"
-                    >
-                      <FormField
-                        control={contentForm.control}
-                        name="content"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Your Content</FormLabel>
-                            <FormControl>
-                              <Textarea placeholder="Paste your content here..." {...field} rows={8} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                       <FormField
-                        control={contentForm.control}
-                        name="targetKeyword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Target Keyword</FormLabel>
-                            <FormControl>
-                              <Input placeholder="e.g., sustainable fashion" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="submit" disabled={loading} className="w-full">
-                        {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-                        Suggest Improvements
-                      </Button>
-                    </form>
-                  </Form>
-                  {contentResult && (
-                    <div className="mt-6">
-                      <h3 className="font-semibold font-headline">Suggestions:</h3>
-                      <ul className="list-disc list-inside space-y-1 rounded-md border p-4 text-sm">
-                        {contentResult.suggestions.map((s, i) => (
-                          <li key={i}>{s}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </div>
+        <ScrollArea className="h-[calc(100vh-8rem)]">
+          <div className="py-4 pr-6">
+            <Tabs defaultValue="keywords">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="keywords">Keywords</TabsTrigger>
+                <TabsTrigger value="content">Content</TabsTrigger>
+              </TabsList>
+              <TabsContent value="keywords">
+                <Card>
+                  <CardContent className="pt-6">
+                    <Form {...keywordForm}>
+                      <form
+                        onSubmit={keywordForm.handleSubmit(onKeywordSubmit)}
+                        className="space-y-4"
+                      >
+                        <FormField
+                          control={keywordForm.control}
+                          name="domain"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Domain</FormLabel>
+                              <FormControl>
+                                <Input placeholder="example.com" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={keywordForm.control}
+                          name="currentKeywords"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Current Keywords (comma-separated)</FormLabel>
+                              <FormControl>
+                                <Input placeholder="seo, marketing" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={keywordForm.control}
+                          name="projectGoals"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Project Goals</FormLabel>
+                              <FormControl>
+                                <Textarea placeholder="Describe your goals" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit" disabled={loading} className="w-full">
+                          {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                          Suggest Keywords
+                        </Button>
+                      </form>
+                    </Form>
+                    {keywordResult && (
+                      <div className="mt-6">
+                        <h3 className="font-semibold font-headline">Suggestions:</h3>
+                        <p className="text-sm text-muted-foreground mb-2">{keywordResult.reasoning}</p>
+                        <ul className="list-disc list-inside space-y-1 rounded-md border p-4 text-sm">
+                          {keywordResult.suggestedKeywords.map((kw) => (
+                            <li key={kw}>{kw}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="content">
+                <Card>
+                  <CardContent className="pt-6">
+                    <Form {...contentForm}>
+                      <form
+                        onSubmit={contentForm.handleSubmit(onContentSubmit)}
+                        className="space-y-4"
+                      >
+                        <FormField
+                          control={contentForm.control}
+                          name="content"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Your Content</FormLabel>
+                              <FormControl>
+                                <Textarea placeholder="Paste your content here..." {...field} rows={8} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={contentForm.control}
+                          name="targetKeyword"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Target Keyword</FormLabel>
+                              <FormControl>
+                                <Input placeholder="e.g., sustainable fashion" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit" disabled={loading} className="w-full">
+                          {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                          Suggest Improvements
+                        </Button>
+                      </form>
+                    </Form>
+                    {contentResult && (
+                      <div className="mt-6">
+                        <h3 className="font-semibold font-headline">Suggestions:</h3>
+                        <ul className="list-disc list-inside space-y-1 rounded-md border p-4 text-sm">
+                          {contentResult.suggestions.map((s, i) => (
+                            <li key={i}>{s}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );

@@ -16,11 +16,13 @@ export default function ClientDashboardLayout({
               SEO Clarity
             </span>
         </div>
-         <p className="text-sm text-muted-foreground">Client Portal for Innovate Inc.</p>
-         <Button asChild variant="outline">
+         <div className="flex-1 text-center md:text-left">
+           <p className="text-sm text-muted-foreground truncate">Client Portal for Innovate Inc.</p>
+         </div>
+         <Button asChild variant="outline" size="sm">
             <Link href="/">
                 <LogOut className="mr-2 h-4 w-4" />
-                Sign Out
+                <span className="hidden md:inline">Sign Out</span>
             </Link>
          </Button>
       </header>
