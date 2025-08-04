@@ -7,6 +7,7 @@ import {
   Briefcase,
   ChevronDown,
   Home,
+  LogOut,
   Menu,
   Settings,
   Upload,
@@ -119,6 +120,14 @@ export default function DashboardLayout({
               <span className="font-headline text-lg font-semibold">
                 SEO Clarity
               </span>
+            </div>
+            <div className="ml-auto flex items-center gap-2">
+                <Button asChild variant="outline" size="sm">
+                    <Link href="/">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span className="hidden md:inline">Sign Out</span>
+                    </Link>
+                </Button>
             </div>
         </header>
         {children}
