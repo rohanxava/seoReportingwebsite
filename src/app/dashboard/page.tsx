@@ -21,6 +21,8 @@ import {
 import { TrafficOverview } from "@/components/dashboard/traffic-overview";
 import { CountryDistribution } from "@/components/dashboard/country-distribution";
 import { CompetitorAnalysis } from "@/components/dashboard/competitor-analysis";
+import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
+import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 
 export default function DashboardPage() {
   return (
@@ -122,7 +124,7 @@ export default function DashboardPage() {
             </Card>
           </div>
           <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
-             <div className="lg:col-span-2 grid gap-4">
+             <div className="lg:col-span-2 grid auto-rows-min gap-4 md:gap-8">
                 <CountryDistribution />
                 <CompetitorAnalysis />
             </div>
@@ -162,7 +164,14 @@ export default function DashboardPage() {
                  </CardContent>
               </Card>
             </div>
-           
+          </div>
+           <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
+              <div className="lg:col-span-2">
+                  <MainOrganicCompetitors />
+              </div>
+               <div className="lg:col-span-3">
+                  <CompetitivePositioningMap />
+              </div>
           </div>
         </TabsContent>
       </Tabs>

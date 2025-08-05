@@ -109,3 +109,29 @@ export const topOrganicKeywordsData = [
     { keyword: "mens infinity bra...", intent: ["I", "T"], position: 37, serp: false, volume: 70, cpc: 0.92, traffic: 0.00 },
     { keyword: "father and son o...", intent: ["I"], position: 36, serp: false, volume: 50, cpc: 0.00, traffic: 0.00 },
 ];
+
+export const mainOrganicCompetitorsData = [
+  { competitor: "cajeestimezone.c...", comLevel: 80, comKeywords: 3, seKeywords: 43 },
+  { competitor: "timeshop24.co.uk", comLevel: 20, comKeywords: 1, seKeywords: 48 },
+  { competitor: "customworksaus...", comLevel: 10, comKeywords: 1, seKeywords: 146 },
+  { competitor: "style-old-money...", comLevel: 15, comKeywords: 1, seKeywords: 67 },
+  { competitor: "laphont.com", comLevel: 12, comKeywords: 1, seKeywords: 47 },
+];
+
+export const competitivePositioningData = [
+    { name: 'cajeestimezone...', organicKeywords: 45, organicSearchTraffic: 50, z: 2.4 },
+    { name: 'timeshop24.co....', organicKeywords: 60, organicSearchTraffic: 40, z: 2.4 },
+    { name: 'customworksa...', organicKeywords: 145, organicSearchTraffic: 30, z: 2.4 },
+    { name: 'style-old-mone...', organicKeywords: 70, organicSearchTraffic: 20, z: 2.4 },
+    { name: 'laphont.com', organicKeywords: 50, organicSearchTraffic: 350, z: 2.4 },
+    { name: 'egardwatches....', organicKeywords: 20, organicSearchTraffic: 10, z: 2.4 },
+];
+
+export const competitivePositioningChartConfig = {
+    cajeestimezone: { label: "cajeestimezone...", color: "hsl(var(--chart-1))" },
+    timeshop24: { label: "timeshop24.co....", color: "hsl(var(--chart-2))" },
+    customworksa: { label: "customworksa...", color: "hsl(var(--chart-3))" },
+    styleoldmone: { label: "style-old-mone...", color: "hsl(var(--chart-4))" },
+    laphont: { label: "laphont.com", color: "hsl(var(--chart-5))" },
+    egardwatches: { label: "egardwatches....", color: "hsl(var(--secondary))" },
+} satisfies ChartConfig;

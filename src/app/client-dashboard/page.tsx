@@ -21,6 +21,8 @@ import { TrafficOverview } from "@/components/dashboard/traffic-overview";
 import { CountryDistribution } from "@/components/dashboard/country-distribution";
 import { OrganicKeywordsChart } from "@/components/client-dashboard/organic-keywords-chart";
 import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
+import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
+import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 
 export default function ClientDashboardPage() {
   return (
@@ -122,11 +124,11 @@ export default function ClientDashboardPage() {
             </Card>
           </div>
           <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
-             <div className="lg:col-span-2 grid gap-4">
+             <div className="lg:col-span-2 grid auto-rows-min gap-4 md:gap-8">
                 <CountryDistribution />
                 <OrganicKeywordsChart />
             </div>
-            <div className="lg:col-span-3 grid gap-4">
+            <div className="lg:col-span-3 grid auto-rows-min gap-4 md:gap-8">
               <Card>
                  <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -163,7 +165,14 @@ export default function ClientDashboardPage() {
               </Card>
               <TopOrganicKeywords />
             </div>
-           
+          </div>
+           <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
+              <div className="lg:col-span-2">
+                  <MainOrganicCompetitors />
+              </div>
+               <div className="lg:col-span-3">
+                  <CompetitivePositioningMap />
+              </div>
           </div>
         </TabsContent>
       </Tabs>
