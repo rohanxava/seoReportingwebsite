@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import {
   Card,
@@ -63,7 +64,7 @@ export default function ClientDetailsPage({
                 </CardHeader>
                 <CardContent>
                     <Button asChild>
-                        <Link href="/dashboard">View Dashboard</Link>
+                        <Link href="/client-dashboard">View Dashboard</Link>
                     </Button>
                 </CardContent>
               </Card>
