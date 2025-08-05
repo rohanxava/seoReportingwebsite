@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
@@ -206,6 +206,10 @@ const Sidebar = React.forwardRef<
               } as React.CSSProperties
             }
           >
+            <SheetHeader className="p-4">
+                <SheetTitle>Navigation Menu</SheetTitle>
+                <SheetDescription>Select a page to navigate to.</SheetDescription>
+            </SheetHeader>
             <div className="flex h-full flex-col" {...props}>
                 {children}
             </div>
