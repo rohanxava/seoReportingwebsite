@@ -1,4 +1,6 @@
 
+import { Suspense } from "react";
+import { DashboardHeader } from "./dashboard-header";
 import {
   Card,
   CardContent,
@@ -37,7 +39,9 @@ export default async function DashboardPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-      {/* The DashboardHeader is now rendered in the layout */}
+       <Suspense>
+        <DashboardHeader />
+      </Suspense>
       <Tabs defaultValue="overview">
         <div className="flex items-center justify-between">
           <TabsList className="overflow-x-auto">

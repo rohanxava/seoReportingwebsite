@@ -1,6 +1,5 @@
 
 import { Suspense } from "react";
-import { DashboardHeader } from "./dashboard-header";
 import { SidebarWrapper } from "@/components/dashboard/sidebar-wrapper";
 import clientPromise from "@/lib/mongodb";
 import type { User } from "@/lib/types";
@@ -28,14 +27,8 @@ export default async function DashboardLayout({
 }) {
   const adminUser = await getAdminUser();
   
-  const header = (
-    <Suspense>
-      <DashboardHeader />
-    </Suspense>
-  );
-  
   return (
-    <SidebarWrapper header={header} adminUser={adminUser}>
+    <SidebarWrapper adminUser={adminUser}>
       {children}
     </SidebarWrapper>
   );

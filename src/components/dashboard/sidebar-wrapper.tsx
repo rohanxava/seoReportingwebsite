@@ -32,11 +32,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function SidebarWrapper({
   children,
-  header,
   adminUser,
 }: {
   children: React.ReactNode;
-  header: React.ReactNode;
   adminUser: User | null;
 }) {
   const pathname = usePathname();
@@ -105,9 +103,6 @@ export function SidebarWrapper({
               <span className="font-headline text-lg font-semibold">
                 SEO Clarity
               </span>
-            </div>
-             <div className="flex-1">
-                {header}
             </div>
             <div className="ml-auto flex items-center gap-2">
                 <Button asChild variant="outline" size="sm">
