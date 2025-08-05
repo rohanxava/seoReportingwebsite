@@ -53,10 +53,22 @@ export async function sendPasswordResetEmail(to: string, resetLink: string) {
                 <p>Best regards,<br>The SEO Clarity Team</p>
             </div>
         `,
+        sendgrid: {
+            asm: null,
+            trackingSettings: {
+                clickTracking: {
+                    enable: false,
+                    enableText: false
+                },
+                openTracking: {
+                    enable: false
+                }
+            }
+        }
     };
 
     try {
-        await transporter.sendMail(mailOptions);
+        await transporter.sendMail(mailOptions as any);
         console.log('Password reset email sent successfully to', to);
     } catch (error) {
         console.error('Error sending password reset email:', error);
