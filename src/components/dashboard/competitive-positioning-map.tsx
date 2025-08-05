@@ -7,24 +7,12 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardFooter
 } from "@/components/ui/card";
 import {
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
   type ChartConfig
 } from "@/components/ui/chart";
-
-const competitivePositioningData = [
-    { name: 'cajeestimezone.c...', organicKeywords: 45, organicSearchTraffic: 50, z: 2.4 },
-    { name: 'timeshop24.co.uk', organicKeywords: 60, organicSearchTraffic: 40, z: 2.4 },
-    { name: 'customworksaus...', organicKeywords: 145, organicSearchTraffic: 30, z: 2.4 },
-    { name: 'style-old-money...', organicKeywords: 70, organicSearchTraffic: 20, z: 2.4 },
-    { name: 'laphont.com', organicKeywords: 50, organicSearchTraffic: 350, z: 2.4 },
-    { name: 'egardwatches.com', organicKeywords: 20, organicSearchTraffic: 10, z: 2.4 },
-];
+import type { CompetitivePositioningDataPoint } from "@/lib/types";
 
 const competitivePositioningChartConfig = {
     cajeestimezone: { label: "cajeestimezone.c...", color: "hsl(var(--chart-1))" },
@@ -50,8 +38,11 @@ const CustomLegend = (props: any) => {
   );
 };
 
+interface CompetitivePositioningMapProps {
+    data: CompetitivePositioningDataPoint[];
+}
 
-export function CompetitivePositioningMap() {
+export function CompetitivePositioningMap({ data }: CompetitivePositioningMapProps) {
   return (
     <Card>
       <CardHeader>
@@ -64,11 +55,9 @@ export function CompetitivePositioningMap() {
               <CartesianGrid />
               <XAxis dataKey="organicKeywords" type="number" name="Organic Keywords" label={{ value: "Organic Keywords", position: 'insideBottom', offset: -10 }} />
               <YAxis dataKey="organicSearchTraffic" type="number" name="Organic Search Traffic" label={{ value: "Organic Search Traffic", angle: -90, position: 'insideLeft' }} />
-              <Tooltip cursor={{ strokeDasharray: '3 3' }} content={<ChartTooltipContent indicator="dot" />} />
+              <Tooltip cursor={{ strokeDasharray: '3 3' }} />
               <Legend content={<CustomLegend />} />
-              {Object.keys(competitivePositioningChartConfig).map((key) => (
-                 <Scatter key={key} name={competitivePositioningChartConfig[key as keyof typeof competitivePositioningChartConfig].label} data={competitivePositioningData.filter(d => d.name === competitivePositioningChartConfig[key as keyof typeof competitivePositioningChartConfig].label)} fill={competitivePositioningChartConfig[key as keyof typeof competitivePositioningChartConfig].color} />
-              ))}
+              <Scatter name="Competitors" data={data} fill="hsl(var(--chart-1))" />
             </ScatterChart>
           </ResponsiveContainer>
         </ChartContainer>

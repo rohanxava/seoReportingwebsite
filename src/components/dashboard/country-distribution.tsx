@@ -2,7 +2,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -16,17 +15,13 @@ import {
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "../ui/button";
+import type { CountryDistributionDataPoint } from "@/lib/types";
 
-const countryDistributionData = [
-    { country: "Worldwide", share: 100, traffic: "3.6K", keywords: "1K" },
-    { country: "🇺🇸 US", share: 58, traffic: "2.1K", keywords: "689" },
-    { country: "🇮🇳 IN", share: 12, traffic: "429", keywords: "23" },
-    { country: "🇦🇺 AU", share: 1, traffic: "1", keywords: "16" },
-    { country: "Other", share: 30, traffic: "1.1K", keywords: "318" },
-];
+interface CountryDistributionProps {
+    data: CountryDistributionDataPoint[];
+}
 
-
-export function CountryDistribution() {
+export function CountryDistribution({ data }: CountryDistributionProps) {
   return (
     <Card>
       <CardHeader>
@@ -43,7 +38,7 @@ export function CountryDistribution() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {countryDistributionData.map((item) => (
+            {data.map((item) => (
               <TableRow key={item.country}>
                 <TableCell className="font-medium">{item.country}</TableCell>
                 <TableCell>

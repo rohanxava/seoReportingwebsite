@@ -2,10 +2,10 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
   CardFooter,
+  CardDescription
 } from "@/components/ui/card";
 import {
   Table,
@@ -19,23 +19,20 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ListFilter } from "lucide-react";
 import Link from "next/link";
+import type { MainOrganicCompetitorsDataPoint } from "@/lib/types";
 
-const mainOrganicCompetitorsData = [
-  { competitor: "cajeestimezone.c...", comLevel: 80, comKeywords: 3, seKeywords: 43 },
-  { competitor: "timeshop24.co.uk", comLevel: 20, comKeywords: 1, seKeywords: 48 },
-  { competitor: "customworksaus...", comLevel: 10, comKeywords: 1, seKeywords: 146 },
-  { competitor: "style-old-money...", comLevel: 15, comKeywords: 1, seKeywords: 67 },
-  { competitor: "laphont.com", comLevel: 12, comKeywords: 1, seKeywords: 47 },
-];
+interface MainOrganicCompetitorsProps {
+    data: MainOrganicCompetitorsDataPoint[];
+}
 
-export function MainOrganicCompetitors() {
+export function MainOrganicCompetitors({ data }: MainOrganicCompetitorsProps) {
   return (
     <Card>
       <CardHeader>
         <div className="flex items-start justify-between">
             <div>
                 <CardTitle className="font-headline">Main Organic Competitors</CardTitle>
-                <CardDescription>{mainOrganicCompetitorsData.length}</CardDescription>
+                <CardDescription>{data.length}</CardDescription>
             </div>
              <Button variant="ghost" size="icon" className="text-muted-foreground">
                 <ListFilter className="h-4 w-4" />
@@ -53,7 +50,7 @@ export function MainOrganicCompetitors() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mainOrganicCompetitorsData.map((competitor) => (
+            {data.map((competitor) => (
               <TableRow key={competitor.competitor}>
                 <TableCell className="font-medium">
                   <Link href="#" className="flex items-center gap-2 hover:underline text-primary">

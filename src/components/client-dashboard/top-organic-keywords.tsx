@@ -2,7 +2,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
   CardFooter,
@@ -17,23 +16,20 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MessageSquareQuote, MoreHorizontal } from "lucide-react";
+import { MessageSquareQuote } from "lucide-react";
+import type { TopOrganicKeywordsDataPoint } from "@/lib/types";
 
-const topOrganicKeywordsData = [
-    { keyword: "police brand wat...", intent: ["C"], position: null, serp: true, volume: 90, cpc: 0.23, traffic: 100.00 },
-    { keyword: "watch tel", intent: ["C"], position: 64, serp: false, volume: 320, cpc: 0.57, traffic: 0.00 },
-    { keyword: "police wtch", intent: ["C"], position: null, serp: true, volume: 50, cpc: 0.22, traffic: 0.00 },
-    { keyword: "mens infinity bra...", intent: ["I", "T"], position: 37, serp: false, volume: 70, cpc: 0.92, traffic: 0.00 },
-    { keyword: "father and son o...", intent: ["I"], position: 36, serp: false, volume: 50, cpc: 0.00, traffic: 0.00 },
-];
+interface TopOrganicKeywordsProps {
+  data: TopOrganicKeywordsDataPoint[];
+}
 
-export function TopOrganicKeywords() {
+export function TopOrganicKeywords({ data }: TopOrganicKeywordsProps) {
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
             <CardTitle className="font-headline">Top Organic Keywords</CardTitle>
-            <Badge variant="outline">{topOrganicKeywordsData.length}</Badge>
+            <Badge variant="outline">{data.length}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-0">
@@ -49,7 +45,7 @@ export function TopOrganicKeywords() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {topOrganicKeywordsData.map((keyword) => (
+            {data.map((keyword) => (
               <TableRow key={keyword.keyword}>
                 <TableCell className="font-medium whitespace-nowrap">{keyword.keyword}</TableCell>
                 <TableCell>

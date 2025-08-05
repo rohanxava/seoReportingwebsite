@@ -9,16 +9,8 @@ import {
   type ChartConfig
 } from "@/components/ui/chart";
 import { Checkbox } from "../ui/checkbox";
+import type { TrafficOverviewDataPoint } from "@/lib/types";
 
-
-const trafficOverviewData = [
-  { date: "2024-03-01", organic: 5200, paid: 500 },
-  { date: "2024-04-01", organic: 5100, paid: 550 },
-  { date: "2024-05-01", organic: 4800, paid: 600 },
-  { date: "2024-06-01", organic: 3500, paid: 450 },
-  { date: "2024-07-01", organic: 3800, paid: 500 },
-  { date: "2024-8-01", organic: 3633, paid: 400 },
-];
 
 const trafficChartConfig = {
   organic: {
@@ -48,12 +40,15 @@ const CustomLegend = (props: any) => {
   );
 };
 
+interface TrafficOverviewProps {
+  data: TrafficOverviewDataPoint[];
+}
 
-export function TrafficOverview() {
+export function TrafficOverview({ data }: TrafficOverviewProps) {
   return (
       <ChartContainer config={trafficChartConfig} className="h-[350px] w-full">
         <ResponsiveContainer>
-          <LineChart data={trafficOverviewData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <LineChart data={data} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
             <CartesianGrid vertical={false} strokeDasharray="3 3" />
             <XAxis
               dataKey="date"

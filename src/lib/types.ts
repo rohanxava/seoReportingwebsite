@@ -23,6 +23,14 @@ export type Project = {
     clientId: ObjectId;
 };
 
+export type TrafficOverviewDataPoint = { date: string; organic: number; paid: number };
+export type CountryDistributionDataPoint = { country: string; share: number; traffic: string; keywords: string };
+export type KeywordsByIntentDataPoint = { intent: string; percentage: number; keywords: number; traffic: number; color: string; };
+export type TopOrganicKeywordsDataPoint = { keyword: string; intent: string[]; position: number | null; serp: boolean; volume: number; cpc: number; traffic: number; };
+export type MainOrganicCompetitorsDataPoint = { competitor: string; comLevel: number; comKeywords: number; seKeywords: number; };
+export type CompetitivePositioningDataPoint = { name: string; organicKeywords: number; organicSearchTraffic: number; z: number; };
+
+
 export type AuditData = {
     authorityScore: number;
     organicSearchTraffic: number;
@@ -31,5 +39,10 @@ export type AuditData = {
     referringDomains: number;
     organicKeywords: number;
     paidKeywords: number;
+    trafficOverviewData: TrafficOverviewDataPoint[];
+    countryDistributionData: CountryDistributionDataPoint[];
+    keywordsByIntentData: KeywordsByIntentDataPoint[];
+    topOrganicKeywordsData: TopOrganicKeywordsDataPoint[];
+    mainOrganicCompetitorsData: MainOrganicCompetitorsDataPoint[];
+    competitivePositioningData: CompetitivePositioningDataPoint[];
 };
-    
