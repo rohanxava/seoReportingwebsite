@@ -1,5 +1,3 @@
-
-
 import { getClients } from "@/app/actions/client";
 import { addProject } from "@/app/actions/project";
 import { NewProjectForm } from "@/components/dashboard/new-project-form";

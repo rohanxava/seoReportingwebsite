@@ -1,5 +1,3 @@
-
-
 import { Suspense } from 'react';
 import { SignupForm } from "@/components/auth/signup-form";
 import { signupUser } from '../actions/auth';

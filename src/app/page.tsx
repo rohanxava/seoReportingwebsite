@@ -1,5 +1,3 @@
-
-
 import { Suspense } from 'react';
 import { LoginForm } from "@/components/auth/login-form";
 import { loginUser } from './actions/auth';
