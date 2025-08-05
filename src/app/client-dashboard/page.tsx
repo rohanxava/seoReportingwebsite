@@ -20,7 +20,7 @@ import {
 import { TrafficOverview } from "@/components/dashboard/traffic-overview";
 import { CountryDistribution } from "@/components/dashboard/country-distribution";
 import { OrganicKeywordsChart } from "@/components/client-dashboard/organic-keywords-chart";
-import { TopOrganicKeywords } from "@/components/dashboard/top-organic-keywords";
+import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
 import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
@@ -139,13 +139,13 @@ export default async function ClientDashboardPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
-            <div className="lg:col-span-2 grid auto-rows-min gap-4 md:gap-8">
+          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-1">
               <CountryDistribution />
               <KeywordsByIntent />
               <OrganicKeywordsChart />
             </div>
-            <div className="lg:col-span-3 grid auto-rows-min gap-4 md:gap-8">
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
               <Card>
                 <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
