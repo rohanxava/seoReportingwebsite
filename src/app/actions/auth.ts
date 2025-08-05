@@ -73,6 +73,8 @@ export async function loginUser(prevState: any, formData: FormData) {
     }
 
     const { email, password } = validatedFields.data;
+    
+    let redirectUrl = '';
 
     try {
         const client = await clientPromise;
@@ -91,12 +93,19 @@ export async function loginUser(prevState: any, formData: FormData) {
             return { message: "Invalid email or password." };
         }
         
-        // Redirect based on role
-        const redirectUrl = user.role === 'client' ? '/client-dashboard' : '/dashboard';
-        redirect(redirectUrl);
+        // Determine redirect URL based on role
+        redirectUrl = user.role === 'client' ? '/client-dashboard' : '/dashboard';
 
     } catch (error) {
         console.error(error);
         return { message: "An unexpected error occurred." };
     }
+
+    // Redirect after the try-catch block
+    if (redirectUrl) {
+        redirect(redirectUrl);
+    }
+
+    // This should not be reached if redirect happens, but as a fallback.
+    return { message: "An unexpected error occurred." };
 }
