@@ -1,8 +1,6 @@
 
 'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -15,56 +13,44 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
+import { addClientUser } from "@/app/actions/client";
+import { Label } from "@/components/ui/label";
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Client name must be at least 2 characters.",
-  }),
-  logoUrl: z.string().url({ message: "Please enter a valid URL." }).optional().or(z.literal('')),
-  email: z.string().email({ message: "Please enter a valid email." }),
-  password: z.string().min(8, { message: "Password must be at least 8 characters." }),
-});
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+      Add Client
+    </Button>
+  );
+};
 
 export default function NewClientPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [state, formAction] = useActionState(addClientUser, null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      logoUrl: "",
-      email: "",
-      password: "",
-    },
-  });
+  useEffect(() => {
+    if (state?.success) {
+        toast({
+            title: "Client Added",
+            description: `The client has been successfully added.`,
+        });
+        router.push("/dashboard/clients");
+    } else if (state?.message) {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: state.message,
+        });
+    }
+  }, [state, toast, router]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
-    console.log(values);
-    // Here you would typically make an API call to save the data.
-    // For this prototype, we'll simulate a delay and show a toast.
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Client Added",
-        description: `${values.name} has been successfully added.`,
-      });
-      router.push("/dashboard/clients");
-    }, 1000);
-  }
 
   return (
     <div className="p-4 md:p-8">
@@ -82,68 +68,31 @@ export default function NewClientPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <form action={formAction} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Client Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="e.g. Innovate Inc." {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="logoUrl"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Logo URL (Optional)</FormLabel>
-                      <FormControl>
-                        <Input placeholder="https://example.com/logo.png" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Client Email</FormLabel>
-                      <FormControl>
-                        <Input type="email" placeholder="client@example.com" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" placeholder="********" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div>
+                  <Label htmlFor="name">Client Name</Label>
+                  <Input id="name" name="name" placeholder="e.g. Innovate Inc." required />
+                  {state?.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name}</p>}
+                </div>
+                 <div>
+                  <Label htmlFor="logoUrl">Logo URL (Optional)</Label>
+                  <Input id="logoUrl" name="logoUrl" placeholder="https://example.com/logo.png" />
+                   {state?.errors?.logoUrl && <p className="text-sm font-medium text-destructive">{state.errors.logoUrl}</p>}
+                </div>
+                 <div>
+                  <Label htmlFor="email">Client Email</Label>
+                  <Input id="email" name="email" type="email" placeholder="client@example.com" required/>
+                   {state?.errors?.email && <p className="text-sm font-medium text-destructive">{state.errors.email}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <Input id="password" name="password" type="password" placeholder="********" required/>
+                   {state?.errors?.password && <p className="text-sm font-medium text-destructive">{state.errors.password}</p>}
+                </div>
               </div>
-              <Button type="submit" disabled={loading}>
-                {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-                Add Client
-              </Button>
+              <SubmitButton />
             </form>
-          </Form>
         </CardContent>
       </Card>
     </div>
