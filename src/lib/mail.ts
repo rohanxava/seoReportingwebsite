@@ -1,0 +1,38 @@
+
+import nodemailer from 'nodemailer';
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.sendgrid.net',
+    port: 587,
+    auth: {
+        user: "apikey",
+        pass: process.env.SENDGRID_API_KEY
+    }
+});
+
+export async function sendOtpEmail(to: string, otp: string) {
+    const mailOptions = {
+        from: process.env.SMTP_USER,
+        to: to,
+        subject: 'Your SEO Clarity Verification Code',
+        html: `
+            <div style="font-family: Arial, sans-serif; color: #333;">
+                <h2>Email Verification</h2>
+                <p>Hello,</p>
+                <p>Thank you for signing up with SEO Clarity. Please use the following One-Time Password (OTP) to complete your verification process.</p>
+                <p style="font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 20px 0; color: #007bff;">${otp}</p>
+                <p>This code will expire in 10 minutes.</p>
+                <p>If you did not request this, please ignore this email.</p>
+                <p>Best regards,<br>The SEO Clarity Team</p>
+            </div>
+        `,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('OTP email sent successfully to', to);
+    } catch (error) {
+        console.error('Error sending OTP email:', error);
+        throw new Error('Could not send verification email.');
+    }
+}

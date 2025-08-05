@@ -10,6 +10,8 @@ export type User = {
     role: 'admin' | 'client';
     password?: string;
     createdBy?: ObjectId;
+    otp?: string;
+    otpExpires?: Date;
 };
 
 export type Project = {

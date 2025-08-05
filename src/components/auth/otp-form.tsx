@@ -1,7 +1,10 @@
 
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useFormStatus, useActionState } from "react-dom";
+import React from "react";
+import { LoaderCircle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -12,18 +15,33 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
-export function OtpForm() {
-  const router = useRouter();
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" className="w-full" disabled={pending}>
+            {pending && <LoaderCircle className="mr-2 animate-spin" />}
+            Verify
+        </Button>
+    )
+}
+
+export function OtpForm({ verifyOtp }: { verifyOtp: (prevState: any, formData: FormData) => Promise<any> }) {
   const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get("redirect") || "/dashboard";
+  const email = searchParams.get("email");
+  const { toast } = useToast();
+  const [state, formAction] = useActionState(verifyOtp, null);
 
-  const handleVerify = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, you'd verify the OTP here.
-    // For this prototype, we'll just redirect.
-    router.push(redirectUrl);
-  };
+  React.useEffect(() => {
+    if (state?.message) {
+      toast({
+        variant: "destructive",
+        title: "Verification Failed",
+        description: state.message,
+      });
+    }
+  }, [state, toast]);
 
   return (
     <Card className="w-full max-w-sm">
@@ -32,24 +50,26 @@ export function OtpForm() {
           Enter Verification Code
         </CardTitle>
         <CardDescription>
-          A one-time password has been sent to your email.
+          A one-time password has been sent to your email: <strong>{email}</strong>
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleVerify} className="grid gap-4">
+        <form action={formAction} className="grid gap-4">
+          <input type="hidden" name="email" value={email || ''} />
           <div className="grid gap-2">
             <Label htmlFor="otp">One-Time Password</Label>
             <Input
               id="otp"
+              name="otp"
               type="text"
               placeholder="123456"
               required
               maxLength={6}
+              minLength={6}
             />
+             {state?.errors?.otp && <p className="text-sm font-medium text-destructive">{state.errors.otp}</p>}
           </div>
-          <Button type="submit" className="w-full">
-            Verify
-          </Button>
+          <SubmitButton />
         </form>
       </CardContent>
     </Card>

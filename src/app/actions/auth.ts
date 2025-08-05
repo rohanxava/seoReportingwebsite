@@ -5,6 +5,29 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import clientPromise from '@/lib/mongodb';
 import { redirect } from 'next/navigation';
+import { sendOtpEmail } from '@/lib/mail';
+import { ObjectId } from 'mongodb';
+
+// --- Helper Functions ---
+
+async function generateAndSaveOtp(email: string): Promise<string> {
+    const client = await clientPromise;
+    const db = client.db('seoAudit');
+    const usersCollection = db.collection('users');
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes expiry
+
+    await usersCollection.updateOne(
+        { email },
+        { $set: { otp, otpExpires } }
+    );
+
+    return otp;
+}
+
+
+// --- Signup Action ---
 
 const signupSchema = z.object({
   agencyName: z.string().min(2, 'Agency name must be at least 2 characters.'),
@@ -43,8 +66,11 @@ export async function signupUser(prevState: any, formData: FormData) {
       name: agencyName,
       email,
       password: hashedPassword,
-      role: 'admin', // Default role for new signups
+      role: 'admin',
     });
+
+    const otp = await generateAndSaveOtp(email);
+    await sendOtpEmail(email, otp);
     
   } catch (error) {
     console.error(error);
@@ -53,9 +79,11 @@ export async function signupUser(prevState: any, formData: FormData) {
     };
   }
 
-  redirect('/dashboard');
+  redirect(`/otp?email=${encodeURIComponent(email)}`);
 }
 
+
+// --- Login Action ---
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -74,8 +102,6 @@ export async function loginUser(prevState: any, formData: FormData) {
 
     const { email, password } = validatedFields.data;
     
-    let redirectUrl = '';
-
     try {
         const client = await clientPromise;
         const db = client.db('seoAudit');
@@ -93,19 +119,63 @@ export async function loginUser(prevState: any, formData: FormData) {
             return { message: "Invalid email or password." };
         }
         
-        // Determine redirect URL based on role
-        redirectUrl = user.role === 'client' ? '/client-dashboard' : '/dashboard';
+        const otp = await generateAndSaveOtp(email);
+        await sendOtpEmail(email, otp);
 
     } catch (error) {
         console.error(error);
         return { message: "An unexpected error occurred." };
     }
 
-    // Redirect after the try-catch block
-    if (redirectUrl) {
-        redirect(redirectUrl);
+    redirect(`/otp?email=${encodeURIComponent(email)}`);
+}
+
+// --- OTP Verification Action ---
+
+const otpSchema = z.object({
+    email: z.string().email(),
+    otp: z.string().length(6, "OTP must be 6 digits."),
+});
+
+export async function verifyOtp(prevState: any, formData: FormData) {
+    const values = Object.fromEntries(formData.entries());
+    const validatedFields = otpSchema.safeParse(values);
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Invalid input."
+        };
     }
 
-    // This should not be reached if redirect happens, but as a fallback.
-    return { message: "An unexpected error occurred." };
+    const { email, otp } = validatedFields.data;
+
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const usersCollection = db.collection('users');
+
+        const user = await usersCollection.findOne({ email });
+
+        if (!user || user.otp !== otp) {
+            return { message: "Invalid OTP. Please try again." };
+        }
+
+        if (!user.otpExpires || user.otpExpires < new Date()) {
+            return { message: "OTP has expired. Please log in again to get a new one." };
+        }
+
+        // Clear OTP after successful verification
+        await usersCollection.updateOne(
+            { _id: new ObjectId(user._id) },
+            { $unset: { otp: "", otpExpires: "" } }
+        );
+        
+        const redirectUrl = user.role === 'client' ? '/client-dashboard' : '/dashboard';
+        redirect(redirectUrl);
+
+    } catch (error) {
+        console.error(error);
+        return { message: "An unexpected error occurred." };
+    }
 }
