@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import React from "react";
 import { Activity, LoaderCircle } from "lucide-react";
 
@@ -30,7 +30,7 @@ function SubmitButton() {
 }
 
 export function SignupForm() {
-  const [state, formAction] = useFormState(signupUser, null);
+  const [state, formAction] = React.useActionState(signupUser, null);
   const { toast } = useToast();
 
   React.useEffect(() => {
