@@ -1,5 +1,4 @@
 
-
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import {
   Card,
@@ -73,7 +72,6 @@ export default function DashboardPage() {
                 <div className="text-4xl font-bold">3.6K</div>
                 <div className="flex items-center text-xs">
                   <span className="text-red-500 mr-1">-0.2%</span>
-                  <Button variant="link" className="p-0 h-auto text-muted-foreground hidden md:inline-flex">View details</Button>
                 </div>
                  <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                   Keywords 1K <ArrowUp className="h-3 w-3 text-green-500" />

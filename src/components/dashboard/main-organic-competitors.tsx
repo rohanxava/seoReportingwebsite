@@ -73,7 +73,9 @@ export function MainOrganicCompetitors() {
         </div>
       </CardContent>
       <CardFooter className="pt-6">
-        <Button className="w-full">View details</Button>
+        <Button asChild className="w-full">
+            <Link href="/dashboard/projects">View details</Link>
+        </Button>
       </CardFooter>
     </Card>
   );

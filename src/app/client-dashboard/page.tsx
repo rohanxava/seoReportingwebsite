@@ -1,6 +1,4 @@
 
-
-
 import { DashboardHeader } from "@/components/client-dashboard/dashboard-header";
 import {
   Card,
@@ -47,7 +45,7 @@ export default function ClientDashboardPage() {
           </TabsList>
         </div>
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center justify-between">
@@ -73,7 +71,6 @@ export default function ClientDashboardPage() {
                 <div className="text-4xl font-bold">3.6K</div>
                 <div className="flex items-center text-xs">
                   <span className="text-red-500 mr-1">-0.2%</span>
-                  <Button variant="link" className="p-0 h-auto text-muted-foreground hidden md:inline-flex">View details</Button>
                 </div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                   Keywords 1K <ArrowUp className="h-3 w-3 text-green-500" />
@@ -111,7 +108,7 @@ export default function ClientDashboardPage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="col-span-2 sm:col-span-1 md:col-span-3 lg:col-span-1">
+            <Card className="col-span-2 md:col-span-3 lg:col-span-1">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center justify-between">
                   Traffic Share
