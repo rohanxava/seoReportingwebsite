@@ -14,14 +14,18 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { SuggestKeywordsInput, SuggestKeywordsOutput } from "@/ai/flows/suggest-keywords-to-target";
 import type { SuggestContentImprovementsInput, SuggestContentImprovementsOutput } from "@/ai/flows/suggest-content-improvements";
+import type { SuggestMetaDescriptionInput, SuggestMetaDescriptionOutput } from "@/ai/flows/suggest-meta-description";
+import type { SuggestBlogIdeasInput, SuggestBlogIdeasOutput } from "@/ai/flows/suggest-blog-ideas";
 
 interface DashboardHeaderProps {
     projects: Project[];
     suggestKeywords: (input: SuggestKeywordsInput) => Promise<SuggestKeywordsOutput>;
     suggestContentImprovements: (input: SuggestContentImprovementsInput) => Promise<SuggestContentImprovementsOutput>;
+    suggestMetaDescription: (input: SuggestMetaDescriptionInput) => Promise<SuggestMetaDescriptionOutput>;
+    suggestBlogIdeas: (input: SuggestBlogIdeasInput) => Promise<SuggestBlogIdeasOutput>;
 }
 
-export function DashboardHeader({ projects, suggestKeywords, suggestContentImprovements }: DashboardHeaderProps) {
+export function DashboardHeader({ projects, suggestKeywords, suggestContentImprovements, suggestMetaDescription, suggestBlogIdeas }: DashboardHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -69,6 +73,8 @@ export function DashboardHeader({ projects, suggestKeywords, suggestContentImpro
         <AiInsightsSheet 
             suggestKeywords={suggestKeywords}
             suggestContentImprovements={suggestContentImprovements}
+            suggestMetaDescription={suggestMetaDescription}
+            suggestBlogIdeas={suggestBlogIdeas}
         />
       </div>
     </div>

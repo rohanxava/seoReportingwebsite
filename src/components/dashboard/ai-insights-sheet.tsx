@@ -36,6 +36,14 @@ import type {
   SuggestContentImprovementsInput,
   SuggestContentImprovementsOutput,
 } from "@/ai/flows/suggest-content-improvements";
+import type {
+  SuggestMetaDescriptionInput,
+  SuggestMetaDescriptionOutput,
+} from "@/ai/flows/suggest-meta-description";
+import type {
+    SuggestBlogIdeasInput,
+    SuggestBlogIdeasOutput,
+} from "@/ai/flows/suggest-blog-ideas";
 import { Card, CardContent } from "../ui/card";
 import { ScrollArea } from "../ui/scroll-area";
 
@@ -50,16 +58,31 @@ const contentSchema = z.object({
   targetKeyword: z.string().min(1, "Target keyword is required."),
 });
 
+const metaSchema = z.object({
+  content: z.string().min(50, "Content must be at least 50 characters."),
+  keyword: z.string().min(1, "Primary keyword is required."),
+});
+
+const blogSchema = z.object({
+  topic: z.string().min(3, "Topic is required."),
+});
+
+
 interface AiInsightsSheetProps {
     suggestKeywords: (input: SuggestKeywordsInput) => Promise<SuggestKeywordsOutput>;
     suggestContentImprovements: (input: SuggestContentImprovementsInput) => Promise<SuggestContentImprovementsOutput>;
+    suggestMetaDescription: (input: SuggestMetaDescriptionInput) => Promise<SuggestMetaDescriptionOutput>;
+    suggestBlogIdeas: (input: SuggestBlogIdeasInput) => Promise<SuggestBlogIdeasOutput>;
 }
 
-export function AiInsightsSheet({ suggestKeywords, suggestContentImprovements }: AiInsightsSheetProps) {
+export function AiInsightsSheet({ suggestKeywords, suggestContentImprovements, suggestMetaDescription, suggestBlogIdeas }: AiInsightsSheetProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [keywordResult, setKeywordResult] = useState<SuggestKeywordsOutput | null>(null);
   const [contentResult, setContentResult] = useState<SuggestContentImprovementsOutput | null>(null);
+  const [metaResult, setMetaResult] = useState<SuggestMetaDescriptionOutput | null>(null);
+  const [blogResult, setBlogResult] = useState<SuggestBlogIdeasOutput | null>(null);
+
 
   const keywordForm = useForm<z.infer<typeof keywordSchema>>({
     resolver: zodResolver(keywordSchema),
@@ -77,6 +100,22 @@ export function AiInsightsSheet({ suggestKeywords, suggestContentImprovements }:
       targetKeyword: "AI-powered CRM",
     },
   });
+
+  const metaForm = useForm<z.infer<typeof metaSchema>>({
+    resolver: zodResolver(metaSchema),
+    defaultValues: {
+        content: "Our CRM uses the latest AI to help your sales team succeed. We provide tools for data analysis and cloud integration, making your business more efficient and profitable. Explore our features today to see how we can help you grow.",
+        keyword: "AI-powered CRM",
+    },
+  });
+
+  const blogForm = useForm<z.infer<typeof blogSchema>>({
+    resolver: zodResolver(blogSchema),
+    defaultValues: {
+        topic: "The future of AI in sales",
+    },
+  });
+
 
   async function onKeywordSubmit(values: z.infer<typeof keywordSchema>) {
     setLoading(true);
@@ -120,6 +159,42 @@ export function AiInsightsSheet({ suggestKeywords, suggestContentImprovements }:
     }
   }
 
+  async function onMetaSubmit(values: z.infer<typeof metaSchema>) {
+    setLoading(true);
+    setMetaResult(null);
+    try {
+      const result = await suggestMetaDescription(values);
+      setMetaResult(result);
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate meta description.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function onBlogSubmit(values: z.infer<typeof blogSchema>) {
+    setLoading(true);
+    setBlogResult(null);
+    try {
+      const result = await suggestBlogIdeas(values);
+      setBlogResult(result);
+    } catch (error) {
+      console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate blog ideas.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -133,15 +208,17 @@ export function AiInsightsSheet({ suggestKeywords, suggestContentImprovements }:
         <SheetHeader>
           <SheetTitle className="font-headline">AI-Powered SEO Insights</SheetTitle>
           <SheetDescription>
-            Get suggestions for keywords and content improvements.
+            Get suggestions for keywords, content, meta descriptions, and blog ideas.
           </SheetDescription>
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-8rem)]">
           <div className="py-4 pr-6">
             <Tabs defaultValue="keywords">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="keywords">Keywords</TabsTrigger>
                 <TabsTrigger value="content">Content</TabsTrigger>
+                <TabsTrigger value="meta">Meta</TabsTrigger>
+                <TabsTrigger value="blog-ideas">Blog Ideas</TabsTrigger>
               </TabsList>
               <TabsContent value="keywords">
                 <Card>
@@ -258,6 +335,100 @@ export function AiInsightsSheet({ suggestKeywords, suggestContentImprovements }:
                             <li key={i}>{s}</li>
                           ))}
                         </ul>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+               <TabsContent value="meta">
+                <Card>
+                  <CardContent className="pt-6">
+                    <Form {...metaForm}>
+                      <form
+                        onSubmit={metaForm.handleSubmit(onMetaSubmit)}
+                        className="space-y-4"
+                      >
+                        <FormField
+                          control={metaForm.control}
+                          name="content"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Page Content</FormLabel>
+                              <FormControl>
+                                <Textarea placeholder="Paste your page content here..." {...field} rows={8} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={metaForm.control}
+                          name="keyword"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Primary Keyword</FormLabel>
+                              <FormControl>
+                                <Input placeholder="e.g., AI-powered CRM" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit" disabled={loading} className="w-full">
+                          {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                          Generate Meta Description
+                        </Button>
+                      </form>
+                    </Form>
+                    {metaResult && (
+                      <div className="mt-6">
+                        <h3 className="font-semibold font-headline">Generated Meta Description:</h3>
+                        <div className="rounded-md border p-4 text-sm bg-muted">
+                          {metaResult.metaDescription}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="blog-ideas">
+                <Card>
+                  <CardContent className="pt-6">
+                    <Form {...blogForm}>
+                      <form
+                        onSubmit={blogForm.handleSubmit(onBlogSubmit)}
+                        className="space-y-4"
+                      >
+                        <FormField
+                          control={blogForm.control}
+                          name="topic"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Topic / Domain</FormLabel>
+                              <FormControl>
+                                <Input placeholder="e.g., The future of AI" {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button type="submit" disabled={loading} className="w-full">
+                          {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+                          Generate Blog Ideas
+                        </Button>
+                      </form>
+                    </Form>
+                    {blogResult && (
+                      <div className="mt-6">
+                        <h3 className="font-semibold font-headline">Blog Ideas:</h3>
+                        <div className="space-y-4">
+                          {blogResult.ideas.map((idea, i) => (
+                            <div key={i} className="rounded-md border p-4 text-sm">
+                              <h4 className="font-semibold mb-1">{idea.title}</h4>
+                              <p className="text-muted-foreground">{idea.description}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </CardContent>

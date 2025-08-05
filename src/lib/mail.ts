@@ -15,17 +15,63 @@ export async function sendOtpEmail(to: string, otp: string) {
         from: process.env.SMTP_USER,
         to: to,
         subject: 'Your SEO Clarity Verification Code',
-        html: `
-            <div style="font-family: Arial, sans-serif; color: #333;">
-                <h2>Email Verification</h2>
-                <p>Hello,</p>
-                <p>Thank you for signing up with SEO Clarity. Please use the following One-Time Password (OTP) to complete your verification process.</p>
-                <p style="font-size: 24px; font-weight: bold; letter-spacing: 2px; margin: 20px 0; color: #007bff;">${otp}</p>
-                <p>This code will expire in 10 minutes.</p>
-                <p>If you did not request this, please ignore this email.</p>
-                <p>Best regards,<br>The SEO Clarity Team</p>
-            </div>
-        `,
+       html: `
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f6f8; padding:20px 0; font-family:Arial,sans-serif;">
+    <tr>
+      <td align="center">
+        <!-- Main Container -->
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+          
+          <!-- Header -->
+          <tr>
+            <td align="center" style="background:#007bff; padding:20px;">
+              <h1 style="color:#ffffff; font-size:24px; margin:0;">SEO Clarity</h1>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding:30px; color:#333; font-size:16px; line-height:1.6;">
+              <h2 style="margin-top:0; color:#007bff; text-align:center;">Email Verification</h2>
+              <p>Hello,</p>
+              <p>
+                Thank you for signing up with <strong>SEO Clarity</strong>. Please use the following 
+                One-Time Password (OTP) to complete your verification process:
+              </p>
+              
+              <!-- OTP Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:30px 0;">
+                <tr>
+                  <td align="center">
+                    <div style="display:inline-block; padding:15px 30px; background:#f0f4ff; border:2px dashed #007bff; border-radius:8px; font-size:28px; font-weight:bold; color:#007bff; letter-spacing:4px;">
+                      ${otp}
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              
+              <p>This code will expire in <strong>10 minutes</strong>.</p>
+              <p>If you did not request this, please ignore this email.</p>
+              
+              
+              
+              <p style="margin-top:30px;">Best regards,<br><strong>The SEO Clarity Team</strong></p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="background:#f9f9f9; color:#999; font-size:12px; padding:15px;">
+              <p style="margin:0;">© 2025 SEO Clarity. All rights reserved.</p>
+            </td>
+          </tr>
+          
+        </table>
+      </td>
+    </tr>
+  </table>
+`
+
     };
 
     try {
