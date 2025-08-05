@@ -21,6 +21,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 export default function SettingsPage() {
   const { toast } = useToast();
@@ -44,12 +45,12 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="p-4 md:p-8 space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="font-headline">Settings</CardTitle>
+          <CardTitle className="font-headline">Account Settings</CardTitle>
           <CardDescription>
-            Manage your account and application settings.
+            Manage your account settings.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -61,6 +62,16 @@ export default function SettingsPage() {
             <Label htmlFor="email">Email</Label>
             <Input id="email" type="email" defaultValue="agency@example.com" readOnly />
           </div>
+        </CardContent>
+      </Card>
+       <Card>
+        <CardHeader>
+          <CardTitle className="font-headline">Application Settings</CardTitle>
+          <CardDescription>
+            Manage your application settings.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
            <div className="space-y-2">
             <Label htmlFor="theme">Theme</Label>
             {mounted && (
@@ -76,9 +87,25 @@ export default function SettingsPage() {
               </Select>
             )}
           </div>
-          <Button onClick={handleSaveChanges}>Save Changes</Button>
         </CardContent>
       </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle className="font-headline">API Settings</CardTitle>
+          <CardDescription>
+            Configure your third-party API keys.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-2">
+            <Label htmlFor="seo-api-key">SEO Audit API Key</Label>
+            <Input id="seo-api-key" type="password" placeholder="Enter your API key" />
+          </div>
+        </CardContent>
+      </Card>
+       <div className="flex justify-end">
+          <Button onClick={handleSaveChanges}>Save All Changes</Button>
+       </div>
     </div>
   );
 }
