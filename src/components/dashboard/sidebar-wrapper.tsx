@@ -9,7 +9,6 @@ import {
   Home,
   LogOut,
   Settings,
-  Upload,
   Users,
 } from "lucide-react";
 import Image from "next/image";
@@ -24,21 +23,24 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
-  SidebarGroup,
-  SidebarGroupLabel,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import type { User } from "@/lib/types";
+import { UploadLogoDialog } from "./upload-logo-dialog";
+import { updateAdminLogo } from "@/app/actions/user";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function SidebarWrapper({
   children,
   header,
+  adminUser,
 }: {
   children: React.ReactNode;
   header: React.ReactNode;
+  adminUser: User | null;
 }) {
   const pathname = usePathname();
+
   return (
     <SidebarProvider>
       <Sidebar>
@@ -81,10 +83,18 @@ export function SidebarWrapper({
           </SidebarMenu>
         </SidebarContent>
         <SidebarFooter>
-            <Button variant="outline" className="w-full justify-start gap-2">
-                <Upload />
-                Upload Logo
-            </Button>
+          {adminUser && (
+             <div className="flex items-center gap-3 p-2">
+                <Avatar className="h-9 w-9">
+                   <AvatarImage src={adminUser.logoUrl} alt={adminUser.name} data-ai-hint="logo" />
+                   <AvatarFallback>{adminUser.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                    <span className="text-sm font-medium">{adminUser.name}</span>
+                     <UploadLogoDialog updateAdminLogo={updateAdminLogo} adminId={adminUser._id.toString()} />
+                </div>
+            </div>
+          )}
         </SidebarFooter>
       </Sidebar>
       <main className="relative flex min-h-svh flex-1 flex-col">
