@@ -141,8 +141,10 @@ export default async function ClientDashboardPage() {
           </div>
           <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
             <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
-              <CountryDistribution />
-              <KeywordsByIntent />
+              <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-8">
+                <CountryDistribution />
+                <KeywordsByIntent />
+              </div>
             </div>
             <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-3">
               <Card>
