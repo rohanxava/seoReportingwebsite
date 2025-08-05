@@ -18,7 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { topOrganicKeywordsData } from "@/lib/data";
-import { MessageSquareQuestion, MoreHorizontal } from "lucide-react";
+import { MessageSquareQuote, MoreHorizontal } from "lucide-react";
 
 export function TopOrganicKeywords() {
   return (
@@ -54,7 +54,7 @@ export function TopOrganicKeywords() {
                       </div>
                   </TableCell>
                   <TableCell>
-                    {keyword.serp ? <MessageSquareQuestion className="h-4 w-4 text-primary" /> : keyword.position}
+                    {keyword.serp ? <MessageSquareQuote className="h-4 w-4 text-primary" /> : keyword.position}
                   </TableCell>
                   <TableCell>{keyword.volume}</TableCell>
                   <TableCell>{keyword.cpc}</TableCell>
