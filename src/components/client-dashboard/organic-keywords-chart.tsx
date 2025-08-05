@@ -3,9 +3,27 @@
 
 import { Area, AreaChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
-import { organicKeywordsChartConfig, organicKeywordsData } from "@/lib/data";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "../ui/chart";
 import { Checkbox } from "../ui/checkbox";
+
+const organicKeywordsData = [
+  { month: "Mar 1", top3: 150, '4-10': 200, '11-20': 250, '21-50': 200, '51-100': 150, serp: 50 },
+  { month: "Apr 1", top3: 160, '4-10': 210, '11-20': 260, '21-50': 210, '51-100': 160, serp: 55 },
+  { month: "May 1", top3: 170, '4-10': 220, '11-20': 270, '21-50': 220, '51-100': 170, serp: 60 },
+  { month: "Jun 1", top3: 180, '4-10': 230, '11-20': 280, '21-50': 230, '51-100': 180, serp: 65 },
+  { month: "Jul 1", top3: 190, '4-10': 240, '11-20': 290, '21-50': 240, '51-100': 190, serp: 70 },
+  { month: "Aug 1", top3: 200, '4-10': 250, '11-20': 300, '21-50': 250, '51-100': 200, serp: 75 },
+];
+
+const organicKeywordsChartConfig = {
+  top3: { label: "Top 3", color: "hsl(var(--chart-1))" },
+  '4-10': { label: "4-10", color: "hsl(var(--chart-2))" },
+  '11-20': { label: "11-20", color: "hsl(var(--chart-3))" },
+  '21-50': { label: "21-50", color: "hsl(var(--chart-4))" },
+  '51-100': { label: "51-100", color: "hsl(var(--chart-5))" },
+  serp: { label: "SERP Features", color: "hsl(var(--chart-1))" },
+} satisfies ChartConfig;
+
 
 const CustomLegend = (props: any) => {
   const { payload } = props;

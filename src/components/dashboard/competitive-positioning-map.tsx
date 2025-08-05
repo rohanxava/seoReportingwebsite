@@ -14,8 +14,27 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  type ChartConfig
 } from "@/components/ui/chart";
-import { competitivePositioningData, competitivePositioningChartConfig } from "@/lib/data";
+
+const competitivePositioningData = [
+    { name: 'cajeestimezone.c...', organicKeywords: 45, organicSearchTraffic: 50, z: 2.4 },
+    { name: 'timeshop24.co.uk', organicKeywords: 60, organicSearchTraffic: 40, z: 2.4 },
+    { name: 'customworksaus...', organicKeywords: 145, organicSearchTraffic: 30, z: 2.4 },
+    { name: 'style-old-money...', organicKeywords: 70, organicSearchTraffic: 20, z: 2.4 },
+    { name: 'laphont.com', organicKeywords: 50, organicSearchTraffic: 350, z: 2.4 },
+    { name: 'egardwatches.com', organicKeywords: 20, organicSearchTraffic: 10, z: 2.4 },
+];
+
+const competitivePositioningChartConfig = {
+    cajeestimezone: { label: "cajeestimezone.c...", color: "hsl(var(--chart-1))" },
+    timeshop24: { label: "timeshop24.co.uk", color: "hsl(var(--chart-2))" },
+    customworksa: { label: "customworksaus...", color: "hsl(var(--chart-3))" },
+    styleoldmone: { label: "style-old-money...", color: "hsl(var(--chart-4))" },
+    laphont: { label: "laphont.com", color: "hsl(var(--chart-5))" },
+    egardwatches: { label: "egardwatches.com", color: "hsl(var(--secondary))" },
+} satisfies ChartConfig;
+
 
 const CustomLegend = (props: any) => {
   const { payload } = props;

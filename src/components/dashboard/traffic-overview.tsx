@@ -6,9 +6,31 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  type ChartConfig
 } from "@/components/ui/chart";
-import { trafficOverviewData, trafficChartConfig } from "@/lib/data";
 import { Checkbox } from "../ui/checkbox";
+
+
+const trafficOverviewData = [
+  { date: "2024-03-01", organic: 5200, paid: 500 },
+  { date: "2024-04-01", organic: 5100, paid: 550 },
+  { date: "2024-05-01", organic: 4800, paid: 600 },
+  { date: "2024-06-01", organic: 3500, paid: 450 },
+  { date: "2024-07-01", organic: 3800, paid: 500 },
+  { date: "2024-8-01", organic: 3633, paid: 400 },
+];
+
+const trafficChartConfig = {
+  organic: {
+    label: "Organic Traffic",
+    color: "hsl(var(--chart-1))",
+  },
+  paid: {
+    label: "Paid Traffic",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
+
 
 const CustomLegend = (props: any) => {
   const { payload } = props;

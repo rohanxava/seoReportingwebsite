@@ -5,7 +5,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { siteAuditData } from "@/lib/data";
+
+const siteAuditData = {
+  score: 88,
+  coreWebVitals: { lcp: 2.1, fid: 25, cls: 0.08 },
+  errors: 5,
+  warnings: 12,
+};
 
 const ProgressCircle = ({ score }: { score: number }) => {
   const radius = 50;

@@ -31,13 +31,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { User } from "@/lib/types";
 
-export function DashboardLayoutClient({
+export function SidebarWrapper({
   children,
-  clients,
   header,
 }: {
   children: React.ReactNode;
-  clients: User[];
   header: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -81,22 +79,6 @@ export function DashboardLayoutClient({
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-
-          <Separator className="my-4" />
-          
-          <SidebarGroup>
-            <SidebarGroupLabel>Your Clients</SidebarGroupLabel>
-            <SidebarMenu>
-                {clients.map(client => (
-                    <SidebarMenuItem key={client._id.toString()}>
-                        <SidebarMenuButton href={`/dashboard/clients/${client._id.toString()}`} isActive={pathname === `/dashboard/clients/${client._id.toString()}`}>
-                            <Image src={client.logoUrl || 'https://placehold.co/20x20.png'} alt={client.name} width={20} height={20} className="rounded-full" data-ai-hint="logo" />
-                            {client.name}
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                ))}
-            </SidebarMenu>
-          </SidebarGroup>
         </SidebarContent>
         <SidebarFooter>
             <Button variant="outline" className="w-full justify-start gap-2">

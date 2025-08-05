@@ -13,7 +13,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { topPagesData } from "@/lib/data";
+
+const topPagesData = [
+  { path: "/features/ai-crm", sessions: 2890, conversionRate: "5.2%" },
+  { path: "/blog/future-of-cloud", sessions: 1980, conversionRate: "3.1%" },
+  { path: "/pricing", sessions: 1520, conversionRate: "8.5%" },
+  { path: "/case-studies/quantum-leap", sessions: 980, conversionRate: "2.5%" },
+  { path: "/integrations", sessions: 750, conversionRate: "1.8%" },
+];
+
 
 export function TopPages() {
   return (

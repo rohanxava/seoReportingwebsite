@@ -5,8 +5,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { backlinksData } from "@/lib/data";
 import { Link, Link2Off, ShieldAlert } from "lucide-react";
+
+const backlinksData = {
+  new: 24,
+  lost: 8,
+  toxic: 3,
+};
 
 export function BacklinksOverview() {
   return (

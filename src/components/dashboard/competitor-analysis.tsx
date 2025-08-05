@@ -14,7 +14,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { competitorData } from "@/lib/data";
+
+const competitorData = [
+    { name: "Competitor A", avgRanking: 5, domain: "competitor-a.com" },
+    { name: "Competitor B", avgRanking: 10, domain: "competitor-b.com" },
+    { name: "Competitor C", avgRanking: 12, domain: "competitor-c.com" },
+    { name: "Competitor D", avgRanking: 18, domain: "competitor-d.com" },
+];
 
 export function CompetitorAnalysis() {
   return (

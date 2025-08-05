@@ -1,29 +1,23 @@
 
-import { DashboardLayoutClient } from "./layout-client";
-import { getClients } from "@/app/actions/client";
-import { DashboardHeader } from "./dashboard-header";
 import { Suspense } from "react";
-import type { User } from "@/lib/types";
+import { DashboardHeader } from "./dashboard-header";
+import { SidebarWrapper } from "@/components/dashboard/sidebar-wrapper";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const clientsData: User[] = await getClients();
-  // Ensure the data passed to the client component is serializable
-  const clients = JSON.parse(JSON.stringify(clientsData));
+  
+  const header = (
+    <Suspense>
+      <DashboardHeader />
+    </Suspense>
+  );
   
   return (
-    <DashboardLayoutClient 
-      clients={clients}
-      header={
-        <Suspense>
-          <DashboardHeader />
-        </Suspense>
-      }
-    >
-        {children}
-    </DashboardLayoutClient>
+    <SidebarWrapper header={header}>
+      {children}
+    </SidebarWrapper>
   );
 }

@@ -14,9 +14,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { keywordRankingsData } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { ArrowDown, ArrowUp, Minus } from "lucide-react";
+
+const keywordRankingsData = [
+  { keyword: "AI-powered CRM", position: 3, change: 1, trend: [5, 4, 3, 3] },
+  { keyword: "Cloud solutions for startups", position: 5, change: -1, trend: [3, 4, 4, 5] },
+  { keyword: "Data analytics tools", position: 8, change: 0, trend: [8, 8, 8, 8] },
+  { keyword: "Best project management software", position: 12, change: 3, trend: [18, 15, 15, 12] },
+  { keyword: "Enterprise SaaS platform", position: 15, change: -2, trend: [11, 12, 13, 15] },
+];
 
 export function KeywordRankings() {
   return (

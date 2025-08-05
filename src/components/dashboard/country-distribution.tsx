@@ -15,8 +15,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
-import { countryDistributionData } from "@/lib/data";
 import { Button } from "../ui/button";
+
+const countryDistributionData = [
+    { country: "Worldwide", share: 100, traffic: "3.6K", keywords: "1K" },
+    { country: "🇺🇸 US", share: 58, traffic: "2.1K", keywords: "689" },
+    { country: "🇮🇳 IN", share: 12, traffic: "429", keywords: "23" },
+    { country: "🇦🇺 AU", share: 1, traffic: "1", keywords: "16" },
+    { country: "Other", share: 30, traffic: "1.1K", keywords: "318" },
+];
+
 
 export function CountryDistribution() {
   return (

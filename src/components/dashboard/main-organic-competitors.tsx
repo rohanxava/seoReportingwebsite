@@ -17,9 +17,16 @@ import {
 } from "@/components/ui/table";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { mainOrganicCompetitorsData } from "@/lib/data";
 import { ExternalLink, ListFilter } from "lucide-react";
 import Link from "next/link";
+
+const mainOrganicCompetitorsData = [
+  { competitor: "cajeestimezone.c...", comLevel: 80, comKeywords: 3, seKeywords: 43 },
+  { competitor: "timeshop24.co.uk", comLevel: 20, comKeywords: 1, seKeywords: 48 },
+  { competitor: "customworksaus...", comLevel: 10, comKeywords: 1, seKeywords: 146 },
+  { competitor: "style-old-money...", comLevel: 15, comKeywords: 1, seKeywords: 67 },
+  { competitor: "laphont.com", comLevel: 12, comKeywords: 1, seKeywords: 47 },
+];
 
 export function MainOrganicCompetitors() {
   return (
