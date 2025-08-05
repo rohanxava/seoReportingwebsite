@@ -1,4 +1,5 @@
 
+
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import {
   Card,
@@ -131,7 +132,7 @@ export default function DashboardPage() {
                 <KeywordsByIntent />
                 <CompetitorAnalysis />
             </div>
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 grid auto-rows-min gap-4 md:gap-8">
               <Card>
                  <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
