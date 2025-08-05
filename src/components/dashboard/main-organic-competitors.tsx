@@ -43,41 +43,39 @@ export function MainOrganicCompetitors() {
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Competitor</TableHead>
-                <TableHead>Com. Level</TableHead>
-                <TableHead className="text-right">Com. Keywords</TableHead>
-                <TableHead className="text-right">SE Keywords</TableHead>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Competitor</TableHead>
+              <TableHead>Com. Level</TableHead>
+              <TableHead className="text-right">Com. Keywords</TableHead>
+              <TableHead className="text-right">SE Keywords</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {mainOrganicCompetitorsData.map((competitor) => (
+              <TableRow key={competitor.competitor}>
+                <TableCell className="font-medium">
+                  <Link href="#" className="flex items-center gap-2 hover:underline text-primary">
+                      {competitor.competitor}
+                      <ExternalLink className="h-4 w-4" />
+                  </Link>
+                </TableCell>
+                <TableCell>
+                    <Slider
+                      defaultValue={[competitor.comLevel]}
+                      max={100}
+                      step={1}
+                      disabled
+                      className="w-24"
+                    />
+                </TableCell>
+                <TableCell className="text-right">{competitor.comKeywords}</TableCell>
+                <TableCell className="text-right">{competitor.seKeywords}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mainOrganicCompetitorsData.map((competitor) => (
-                <TableRow key={competitor.competitor}>
-                  <TableCell className="font-medium">
-                    <Link href="#" className="flex items-center gap-2 hover:underline text-primary">
-                        {competitor.competitor}
-                        <ExternalLink className="h-4 w-4" />
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                      <Slider
-                        defaultValue={[competitor.comLevel]}
-                        max={100}
-                        step={1}
-                        disabled
-                        className="w-24"
-                      />
-                  </TableCell>
-                  <TableCell className="text-right">{competitor.comKeywords}</TableCell>
-                  <TableCell className="text-right">{competitor.seKeywords}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
       <CardFooter className="pt-6">
         <Button asChild className="w-full">
