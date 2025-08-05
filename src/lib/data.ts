@@ -101,3 +101,11 @@ export const organicKeywordsChartConfig = {
   '51-100': { label: "51-100", color: "hsl(var(--chart-5))" },
   serp: { label: "SERP Features", color: "hsl(var(--chart-1))" },
 } satisfies ChartConfig;
+
+export const topOrganicKeywordsData = [
+    { keyword: "police brand wat...", intent: ["C"], position: null, serp: true, volume: 90, cpc: 0.23, traffic: 100.00 },
+    { keyword: "watch tel", intent: ["C"], position: 64, serp: false, volume: 320, cpc: 0.57, traffic: 0.00 },
+    { keyword: "police wtch", intent: ["C"], position: null, serp: true, volume: 50, cpc: 0.22, traffic: 0.00 },
+    { keyword: "mens infinity bra...", intent: ["I", "T"], position: 37, serp: false, volume: 70, cpc: 0.92, traffic: 0.00 },
+    { keyword: "father and son o...", intent: ["I"], position: 36, serp: false, volume: 50, cpc: 0.00, traffic: 0.00 },
+];

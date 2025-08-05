@@ -12,7 +12,6 @@ import {
   ArrowDown,
   ArrowUp,
   Circle,
-  ExternalLink,
   Globe,
   Link as LinkIcon,
   PieChart,
@@ -21,6 +20,7 @@ import {
 import { TrafficOverview } from "@/components/dashboard/traffic-overview";
 import { CountryDistribution } from "@/components/dashboard/country-distribution";
 import { OrganicKeywordsChart } from "@/components/client-dashboard/organic-keywords-chart";
+import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
 
 export default function ClientDashboardPage() {
   return (
@@ -126,7 +126,7 @@ export default function ClientDashboardPage() {
                 <CountryDistribution />
                 <OrganicKeywordsChart />
             </div>
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 grid gap-4">
               <Card>
                  <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -161,6 +161,7 @@ export default function ClientDashboardPage() {
                     <TrafficOverview />
                  </CardContent>
               </Card>
+              <TopOrganicKeywords />
             </div>
            
           </div>
