@@ -2,6 +2,8 @@
 import clientPromise from "@/lib/mongodb";
 import type { User } from "@/lib/types";
 import { SettingsForm } from "@/components/dashboard/settings-form";
+import { updateAdminDetails } from "@/app/actions/user";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 async function getAdminUser(): Promise<User | null> {
     // In a real app, you would get the current admin's ID from the session.
@@ -35,5 +37,5 @@ export default async function SettingsPage() {
     )
   }
 
-  return <SettingsForm adminUser={adminUser} />;
+  return <SettingsForm adminUser={adminUser} updateAdminDetails={updateAdminDetails} />;
 }

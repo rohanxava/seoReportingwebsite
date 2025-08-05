@@ -48,3 +48,48 @@ export async function updateAdminLogo(prevState: any, formData: FormData) {
     };
   }
 }
+
+const updateDetailsSchema = z.object({
+  name: z.string().min(2, 'Full name must be at least 2 characters.'),
+  adminId: z.string().refine((val) => ObjectId.isValid(val), { message: "Invalid admin ID." }),
+});
+
+
+export async function updateAdminDetails(prevState: any, formData: FormData) {
+  const values = Object.fromEntries(formData.entries());
+  const validatedFields = updateDetailsSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    };
+  }
+
+  const { name, adminId } = validatedFields.data;
+
+  try {
+    const client = await clientPromise;
+    const db = client.db('seoAudit');
+    const usersCollection = db.collection('users');
+
+    const result = await usersCollection.updateOne(
+      { _id: new ObjectId(adminId), role: 'admin' },
+      { $set: { name: name } }
+    );
+
+    if (result.matchedCount === 0) {
+      return { message: "Admin user not found." };
+    }
+
+    revalidatePath('/dashboard/settings');
+    revalidatePath('/dashboard', 'layout'); // Revalidate layout to update name in sidebar
+
+    return { success: true, message: 'Your details have been updated.' };
+
+  } catch (error) {
+    console.error(error);
+    return {
+      message: 'An unexpected error occurred. Please try again.',
+    };
+  }
+}
