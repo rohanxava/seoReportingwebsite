@@ -51,14 +51,18 @@ export function DashboardPageClient({ selectedProjectId, initialManualReports }:
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      let data;
+      let report;
       if (selectedReportId) {
-        data = await getManualReportById(selectedReportId);
-      } else {
-        data = await getAuditData();
+        report = await getManualReportById(selectedReportId);
       }
-      setAuditData(data);
+      
+      if (report) {
+         setAuditData(report.auditData);
+      } else {
+         setAuditData(await getAuditData());
+      }
       setIsLoading(false);
+      setIsReportLoading(false);
     };
 
     loadData();
@@ -68,13 +72,31 @@ export function DashboardPageClient({ selectedProjectId, initialManualReports }:
     setManualReports(initialManualReports);
   }, [initialManualReports]);
 
+  const handleReportSaveOrUpdate = (savedReport: ManualReport) => {
+    setManualReports(prev => {
+        const existingIndex = prev.findIndex(r => r._id === savedReport._id);
+        if (existingIndex !== -1) {
+            const newReports = [...prev];
+            newReports[existingIndex] = savedReport;
+            return newReports;
+        } else {
+            return [savedReport, ...prev];
+        }
+    });
+  }
+
 
   const handleDataUpdate = (newData: Partial<AuditData>) => {
     setAuditData(prevData => prevData ? {...prevData, ...newData} : null);
   }
 
   const handleReportSelect = (reportId: string) => {
-    if (!reportId) return;
+    if (!reportId || reportId === "live-data") {
+        const params = new URLSearchParams(searchParams);
+        params.delete('report');
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+        return;
+    }
     setIsReportLoading(true);
     const params = new URLSearchParams(searchParams);
     params.set('report', reportId);
@@ -88,6 +110,9 @@ export function DashboardPageClient({ selectedProjectId, initialManualReports }:
         </div>
     );
   }
+  
+  const currentReport = selectedReportId ? manualReports.find(r => r._id.toString() === selectedReportId) : null;
+
 
   return (
     <>
@@ -95,18 +120,20 @@ export function DashboardPageClient({ selectedProjectId, initialManualReports }:
         <ManualDataForm 
             projectId={selectedProjectId}
             onDataUpdate={handleDataUpdate}
-            onReportSave={(newReport) => setManualReports(prev => [newReport, ...prev])}
+            onReportSave={handleReportSaveOrUpdate}
+            initialData={currentReport}
         />
         <div className="flex gap-2 w-full md:w-auto">
-            <Select onValueChange={handleReportSelect} defaultValue={selectedReportId || ""}>
-                <SelectTrigger className="w-full md:w-[200px]" disabled={isReportLoading}>
+            <Select onValueChange={handleReportSelect} value={selectedReportId || "live-data"} disabled={isReportLoading}>
+                <SelectTrigger className="w-full md:w-[200px]">
                     <SelectValue placeholder="Load a saved report" />
                 </SelectTrigger>
                 <SelectContent>
+                    <SelectItem value="live-data">View Live Data</SelectItem>
                     {manualReports.length > 0 ? (
                         manualReports.map(report => (
                             <SelectItem key={report._id.toString()} value={report._id.toString()}>
-                                {report.reportName} - {new Date(report.createdAt).toLocaleDateString()}
+                                {report.reportName}
                             </SelectItem>
                         ))
                     ) : (

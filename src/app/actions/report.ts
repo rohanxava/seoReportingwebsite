@@ -80,7 +80,7 @@ export async function emailReportToClient(reportData: ReportData) {
 }
 
 
-const manualReportSchema = z.object({
+const reportSchema = z.object({
   reportName: z.string().min(3, "Report name must be at least 3 characters."),
   projectId: z.string().refine(val => ObjectId.isValid(val)),
   auditData: z.any(),
@@ -93,7 +93,7 @@ export async function saveManualReport(prevState: any, formData: FormData) {
     auditData: JSON.parse(formData.get('auditData') as string),
   };
   
-  const validatedFields = manualReportSchema.safeParse(rawData);
+  const validatedFields = reportSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
     return {
@@ -107,19 +107,81 @@ export async function saveManualReport(prevState: any, formData: FormData) {
     const db = client.db('seoAudit');
     const collection = db.collection('manualReports');
     
-    await collection.insertOne({
+    const result = await collection.insertOne({
       ...validatedFields.data,
       projectId: new ObjectId(validatedFields.data.projectId),
       createdAt: new Date(),
     });
 
     revalidatePath('/dashboard');
-    return { success: true, message: 'Report saved successfully!' };
+    
+    const newReport = await collection.findOne({ _id: result.insertedId });
+
+    return { 
+        success: true, 
+        message: 'Report saved successfully!',
+        newReport: JSON.parse(JSON.stringify(newReport)),
+    };
 
   } catch (error) {
     console.error('Failed to save manual report:', error);
     return { message: 'Database error: Failed to save report.' };
   }
+}
+
+
+const updateReportSchema = z.object({
+  reportId: z.string().refine(val => ObjectId.isValid(val)),
+  reportName: z.string().min(3, "Report name must be at least 3 characters."),
+  auditData: z.any(),
+});
+
+export async function updateManualReport(prevState: any, formData: FormData) {
+  const rawData = {
+    reportId: formData.get('reportId'),
+    reportName: formData.get('reportName'),
+    auditData: JSON.parse(formData.get('auditData') as string),
+  };
+
+  const validatedFields = updateReportSchema.safeParse(rawData);
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Validation failed.'
+    };
+  }
+  
+  try {
+    const client = await clientPromise;
+    const db = client.db('seoAudit');
+    const collection = db.collection<ManualReport>('manualReports');
+
+    const { reportId, ...updateData } = validatedFields.data;
+
+    const result = await collection.updateOne(
+      { _id: new ObjectId(reportId) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      return { message: "Report not found." };
+    }
+
+    revalidatePath('/dashboard');
+    
+    const updatedReport = await collection.findOne({_id: new ObjectId(reportId) });
+
+    return { 
+        success: true, 
+        message: 'Report updated successfully!',
+        updatedReport: JSON.parse(JSON.stringify(updatedReport)),
+    };
+  } catch(error) {
+    console.error('Failed to update manual report:', error);
+    return { message: 'Database error: Failed to update report.' };
+  }
+
 }
 
 
@@ -142,7 +204,7 @@ export async function getManualReportsForProject(projectId: string): Promise<Man
     }
 }
 
-export async function getManualReportById(reportId: string): Promise<AuditData | null> {
+export async function getManualReportById(reportId: string): Promise<ManualReport | null> {
     if (!ObjectId.isValid(reportId)) {
         return null;
     }
@@ -151,7 +213,7 @@ export async function getManualReportById(reportId: string): Promise<AuditData |
         const db = client.db('seoAudit');
         const report = await db.collection<ManualReport>('manualReports').findOne({ _id: new ObjectId(reportId) });
         
-        return report ? report.auditData : null;
+        return report ? JSON.parse(JSON.stringify(report)) : null;
     } catch (error) {
         console.error('Failed to fetch manual report:', error);
         return null;

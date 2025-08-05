@@ -16,8 +16,8 @@ import { Label } from '@/components/ui/label';
 import type { AuditData, ManualReport } from '@/lib/types';
 import { ChevronsUpDown, PlusCircle, Trash2, LoaderCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { useActionState, useEffect } from 'react';
-import { saveManualReport } from '@/app/actions/report';
+import { useActionState, useEffect, useState } from 'react';
+import { saveManualReport, updateManualReport } from '@/app/actions/report';
 import { useFormStatus } from 'react-dom';
 
 const formSchema = z.object({
@@ -38,7 +38,7 @@ const formSchema = z.object({
       country: z.string().min(1, 'Country is required'),
       share: z.coerce.number().min(0).max(100),
       traffic: z.string().min(1, 'Traffic is required'),
-      keywords: z.string().min(1, 'Keywords are required')
+      keywords: z.string().min(1, 'Keywords is required')
   })),
   keywordsByIntentData: z.array(z.object({
       intent: z.string().min(1, 'Intent is required'),
@@ -77,59 +77,26 @@ interface ManualDataFormProps {
   projectId: string | null;
   onDataUpdate: (data: Partial<AuditData>) => void;
   onReportSave: (newReport: ManualReport) => void;
+  initialData?: ManualReport | null;
 }
 
-const SubmitButton = () => {
+const SubmitButton = ({ isEditing }: { isEditing: boolean }) => {
     const { pending } = useFormStatus();
     return (
          <Button type="submit" disabled={pending}>
             {pending && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-            Save Report
+            {isEditing ? 'Save Changes' : 'Save as New Report'}
         </Button>
     )
 }
 
-export function ManualDataForm({ projectId, onDataUpdate, onReportSave }: ManualDataFormProps) {
+export function ManualDataForm({ projectId, onDataUpdate, onReportSave, initialData }: ManualDataFormProps) {
   const { toast } = useToast();
-  const [state, formAction] = useActionState(saveManualReport, null);
+  const [saveState, saveAction] = useActionState(saveManualReport, null);
+  const [updateState, updateAction] = useActionState(updateManualReport, null);
   
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      reportName: `Report ${new Date().toLocaleDateString()}`,
-      authorityScore: 30,
-      organicSearchTraffic: 3600,
-      paidSearchTraffic: 126,
-      backlinks: 7000,
-      referringDomains: 731,
-      organicKeywords: 1000,
-      paidKeywords: 8,
-      trafficOverviewData: [
-        { date: "2024-03-01", organic: 5200, paid: 500 },
-        { date: "2024-04-01", organic: 5100, paid: 550 },
-        { date: "2024-05-01", organic: 4800, paid: 600 },
-      ],
-      countryDistributionData: [
-        { country: "Worldwide", share: 100, traffic: "3.6K", keywords: "1K" },
-        { country: "🇺🇸 US", share: 58, traffic: "2.1K", keywords: "689" },
-      ],
-      keywordsByIntentData: [
-         { intent: 'Commercial', percentage: 50, keywords: 9, traffic: 1, color: 'bg-yellow-400' },
-         { intent: 'Transactional', percentage: 16.7, keywords: 3, traffic: 0, color: 'bg-teal-500' },
-      ],
-      topOrganicKeywordsData: [
-        { keyword: "police brand wat...", intent: "C", position: null, serp: true, volume: 90, cpc: 0.23, traffic: 100.00 },
-        { keyword: "watch tel", intent: "C", position: 64, serp: false, volume: 320, cpc: 0.57, traffic: 0.00 },
-      ],
-      mainOrganicCompetitorsData: [
-        { competitor: "cajeestimezone.c...", comLevel: 80, comKeywords: 3, seKeywords: 43 },
-        { competitor: "timeshop24.co.uk", comLevel: 20, comKeywords: 1, seKeywords: 48 },
-      ],
-      competitivePositioningData: [
-        { name: 'cajeestimezone.c...', organicKeywords: 45, organicSearchTraffic: 50, z: 2.4 },
-        { name: 'timeshop24.co.uk', organicKeywords: 60, organicSearchTraffic: 40, z: 2.4 },
-      ]
-    },
   });
 
   const { fields: trafficFields, append: appendTraffic, remove: removeTraffic } = useFieldArray({ control: form.control, name: "trafficOverviewData" });
@@ -138,24 +105,62 @@ export function ManualDataForm({ projectId, onDataUpdate, onReportSave }: Manual
   const { fields: keywordFields, append: appendKeyword, remove: removeKeyword } = useFieldArray({ control: form.control, name: "topOrganicKeywordsData" });
   const { fields: competitorFields, append: appendCompetitor, remove: removeCompetitor } = useFieldArray({ control: form.control, name: "mainOrganicCompetitorsData" });
   const { fields: positioningFields, append: appendPositioning, remove: removePositioning } = useFieldArray({ control: form.control, name: "competitivePositioningData" });
-
+  
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
+    if (initialData) {
+        setIsEditing(true);
+        form.reset({
+            ...initialData.auditData,
+            reportName: initialData.reportName,
+            topOrganicKeywordsData: initialData.auditData.topOrganicKeywordsData.map(k => ({...k, intent: k.intent.join(', ')}))
+        });
+    } else {
+        setIsEditing(false);
+        form.reset({
+          reportName: `Report ${new Date().toLocaleDateString()}`,
+          authorityScore: 30,
+          organicSearchTraffic: 3600,
+          paidSearchTraffic: 126,
+          backlinks: 7000,
+          referringDomains: 731,
+          organicKeywords: 1000,
+          paidKeywords: 8,
+          trafficOverviewData: [],
+          countryDistributionData: [],
+          keywordsByIntentData: [],
+          topOrganicKeywordsData: [],
+          mainOrganicCompetitorsData: [],
+          competitivePositioningData: []
+        });
+    }
+  }, [initialData, form]);
+  
+  
+  useEffect(() => {
+    const state = isEditing ? updateState : saveState;
     if (state?.success) {
         toast({
-            title: "Report Saved",
-            description: "The manual report has been saved successfully.",
+            title: isEditing ? "Report Updated" : "Report Saved",
+            description: state.message,
         });
+        if (state.newReport) {
+            onReportSave(state.newReport);
+        }
+        if (state.updatedReport) {
+            onReportSave(state.updatedReport);
+        }
     } else if (state?.message) {
          toast({
             variant: "destructive",
-            title: "Save Failed",
+            title: isEditing ? "Update Failed" : "Save Failed",
             description: state.message,
         });
     }
-  }, [state, toast])
+  }, [saveState, updateState, isEditing, toast, onReportSave]);
 
-  const onSubmit = (data: FormSchemaType) => {
+  const handleFormSubmit = (data: FormSchemaType) => {
     if (!projectId) {
         toast({ variant: "destructive", title: "Error", description: "No project selected." });
         return;
@@ -165,17 +170,22 @@ export function ManualDataForm({ projectId, onDataUpdate, onReportSave }: Manual
     
     const preparedAuditData: AuditData = {
       ...auditDataValues,
-      topOrganicKeywordsData: data.topOrganicKeywordsData.map(k => ({...k, intent: k.intent.split(',').map(i => i.trim())}))
+      topOrganicKeywordsData: data.topOrganicKeywordsData.map(k => ({...k, intent: k.intent.split(',').map(i => i.trim()).filter(Boolean)}))
     };
 
     onDataUpdate(preparedAuditData);
     
     const formData = new FormData();
     formData.append('reportName', reportName);
-    formData.append('projectId', projectId);
     formData.append('auditData', JSON.stringify(preparedAuditData));
 
-    formAction(formData);
+    if(isEditing && initialData) {
+        formData.append('reportId', initialData._id.toString());
+        updateAction(formData);
+    } else {
+        formData.append('projectId', projectId);
+        saveAction(formData);
+    }
   };
 
   return (
@@ -195,7 +205,7 @@ export function ManualDataForm({ projectId, onDataUpdate, onReportSave }: Manual
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <CardContent>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pt-4">
+                    <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-8 pt-4">
                         <div className="space-y-2">
                             <Label htmlFor="reportName">Report Name</Label>
                             <Input id="reportName" {...form.register('reportName')} />
@@ -377,8 +387,9 @@ export function ManualDataForm({ projectId, onDataUpdate, onReportSave }: Manual
                                 <PlusCircle className="mr-2 h-4 w-4" /> Add Positioning Data
                             </Button>
                         </div>
-
-                        <SubmitButton />
+                        <div className="flex justify-end">
+                            <SubmitButton isEditing={isEditing} />
+                        </div>
                     </form>
                 </CardContent>
             </CollapsibleContent>
