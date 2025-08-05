@@ -139,15 +139,8 @@ export default async function ClientDashboardPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
-            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
-              <div className="grid md:grid-cols-2 lg:grid-cols-1 gap-4 md:gap-8">
-                <CountryDistribution />
-                <KeywordsByIntent />
-              </div>
-            </div>
-            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-3">
-              <Card>
+          <div className="grid gap-4 md:gap-8">
+            <Card className="lg:col-span-3">
                 <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <Tabs defaultValue="organic" className="w-full">
@@ -181,7 +174,14 @@ export default async function ClientDashboardPage() {
                   <TrafficOverview />
                 </CardContent>
               </Card>
-            </div>
+              <div className="grid auto-rows-min gap-4 md:gap-8 lg:grid-cols-5">
+                <div className="lg:col-span-3">
+                    <CountryDistribution />
+                </div>
+                <div className="lg:col-span-2">
+                    <KeywordsByIntent />
+                </div>
+              </div>
           </div>
            <div className="grid gap-4 md:gap-8 md:grid-cols-2">
               <OrganicKeywordsChart />
