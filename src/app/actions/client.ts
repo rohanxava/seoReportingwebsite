@@ -15,6 +15,18 @@ const addClientSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters.'),
 });
 
+// Helper function to get the current admin user.
+// In a real app, this would come from a session.
+async function getAdmin() {
+    const client = await clientPromise;
+    const db = client.db('seoAudit');
+    const admin = await db.collection('users').findOne({ role: 'admin' });
+    if (!admin) {
+        throw new Error("No admin user found in the database.");
+    }
+    return admin;
+}
+
 export async function addClientUser(prevState: any, formData: FormData) {
   const values = Object.fromEntries(formData.entries());
   const validatedFields = addClientSchema.safeParse(values);
@@ -27,11 +39,10 @@ export async function addClientUser(prevState: any, formData: FormData) {
   
   const { name, logoUrl, email, password } = validatedFields.data;
 
-  // In a real app, you would get the current admin's ID from the session.
-  // For this prototype, we'll use a hardcoded admin ID.
-  const adminId = "66a013a483896b1b36991392";
-
   try {
+    const admin = await getAdmin();
+    const adminId = admin._id;
+
     const client = await clientPromise;
     const db = client.db('seoAudit');
     const usersCollection = db.collection('users');
@@ -71,11 +82,10 @@ export async function addClientUser(prevState: any, formData: FormData) {
 }
 
 export async function getClients(): Promise<User[]> {
-    // In a real app, you would get the current admin's ID from the session.
-    // For this prototype, we'll use a hardcoded admin ID to filter clients.
-    const adminId = "66a013a483896b1b36991392";
-
     try {
+        const admin = await getAdmin();
+        const adminId = admin._id;
+
         const client = await clientPromise;
         const db = client.db('seoAudit');
         const users = await db.collection('users').find({ 
