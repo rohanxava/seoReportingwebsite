@@ -31,6 +31,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { User } from "@/lib/types";
+import { Suspense } from "react";
+import { DashboardHeader } from "./dashboard-header";
 
 export function DashboardLayoutClient({
   children,
@@ -87,7 +89,7 @@ export function DashboardLayoutClient({
             <SidebarGroupLabel>Your Clients</SidebarGroupLabel>
             <SidebarMenu>
                 {clients.map(client => (
-                    <SidebarMenuItem key={client._id}>
+                    <SidebarMenuItem key={client._id.toString()}>
                         <SidebarMenuButton href={`/dashboard/clients/${client._id}`} isActive={pathname === `/dashboard/clients/${client._id}`}>
                             <Image src={client.logoUrl || 'https://placehold.co/20x20.png'} alt={client.name} width={20} height={20} className="rounded-full" data-ai-hint="logo" />
                             {client.name}
@@ -113,6 +115,11 @@ export function DashboardLayoutClient({
                 SEO Clarity
               </span>
             </div>
+             <div className="flex-1">
+              <Suspense>
+                <DashboardHeader />
+              </Suspense>
+            </div>
             <div className="ml-auto flex items-center gap-2">
                 <Button asChild variant="outline" size="sm">
                     <Link href="/">
@@ -127,3 +134,4 @@ export function DashboardLayoutClient({
     </SidebarProvider>
   );
 }
+

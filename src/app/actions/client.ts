@@ -4,6 +4,8 @@
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import clientPromise from '@/lib/mongodb';
+import { revalidatePath } from 'next/cache';
+import type { User } from '@/lib/types';
 
 const addClientSchema = z.object({
   name: z.string().min(2, 'Client name must be at least 2 characters.'),
@@ -47,6 +49,9 @@ export async function addClientUser(prevState: any, formData: FormData) {
       role: 'client',
     });
     
+    revalidatePath('/dashboard/clients');
+    revalidatePath('/dashboard/projects/new');
+
     return {
         success: true,
     }
@@ -57,4 +62,16 @@ export async function addClientUser(prevState: any, formData: FormData) {
       message: 'An unexpected error occurred. Please try again.',
     };
   }
+}
+
+export async function getClients(): Promise<User[]> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        return JSON.parse(JSON.stringify(users));
+    } catch (error) {
+        console.error('Failed to fetch clients:', error);
+        return [];
+    }
 }

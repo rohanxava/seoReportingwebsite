@@ -1,5 +1,5 @@
 
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
+import { DashboardHeader } from "./dashboard-header";
 import {
   Card,
   CardContent,
