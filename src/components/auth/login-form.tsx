@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -71,7 +70,7 @@ export function LoginForm({ loginUser }: { loginUser: (prevState: any, formData:
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
               <Link
-                href="#"
+                href="/forgot-password"
                 className="ml-auto inline-block text-sm underline"
               >
                 Forgot your password?

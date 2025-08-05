@@ -1,12 +1,12 @@
-
 'use server';
 
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import clientPromise from '@/lib/mongodb';
 import { redirect } from 'next/navigation';
-import { sendOtpEmail } from '@/lib/mail';
+import { sendOtpEmail, sendPasswordResetEmail } from '@/lib/mail';
 import { ObjectId } from 'mongodb';
+import crypto from 'crypto';
 
 // --- Helper Functions ---
 
@@ -223,4 +223,109 @@ export async function resendOtp(prevState: any, formData: FormData) {
     console.error(error);
     return { message: "An unexpected error occurred. Please try again." };
   }
+}
+
+// --- Forgot Password Action ---
+
+const forgotPasswordSchema = z.object({
+    email: z.string().email({ message: "Please enter a valid email." }),
+});
+
+export async function requestPasswordReset(prevState: any, formData: FormData) {
+    const values = Object.fromEntries(formData.entries());
+    const validatedFields = forgotPasswordSchema.safeParse(values);
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        };
+    }
+
+    const { email } = validatedFields.data;
+
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const usersCollection = db.collection('users');
+
+        const user = await usersCollection.findOne({ email });
+
+        if (!user) {
+            // To prevent email enumeration, we don't reveal if the user exists.
+            return { success: true };
+        }
+
+        const token = crypto.randomBytes(32).toString("hex");
+        const resetToken = crypto.createHash("sha256").update(token).digest("hex");
+        const resetTokenExpires = new Date(Date.now() + 3600000); // 1 hour
+
+        await usersCollection.updateOne(
+            { _id: user._id },
+            { $set: { resetToken, resetTokenExpires } }
+        );
+        
+        const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${token}`;
+        await sendPasswordResetEmail(email, resetLink);
+
+        return { success: true };
+
+    } catch (error) {
+        console.error(error);
+        return {
+            message: "An unexpected error occurred. Please try again.",
+        };
+    }
+}
+
+
+// --- Reset Password Action ---
+
+const resetPasswordSchema = z.object({
+    password: z.string().min(8, "Password must be at least 8 characters."),
+    token: z.string().min(1, "Invalid token."),
+});
+
+export async function resetPassword(prevState: any, formData: FormData) {
+    const values = Object.fromEntries(formData.entries());
+    const validatedFields = resetPasswordSchema.safeParse(values);
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        };
+    }
+
+    const { password, token } = validatedFields.data;
+    const resetToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const usersCollection = db.collection('users');
+
+        const user = await usersCollection.findOne({
+            resetToken,
+            resetTokenExpires: { $gt: new Date() },
+        });
+
+        if (!user) {
+            return { message: "Invalid or expired password reset token." };
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        await usersCollection.updateOne(
+            { _id: user._id },
+            { 
+                $set: { password: hashedPassword },
+                $unset: { resetToken: "", resetTokenExpires: "" }
+            }
+        );
+
+    } catch (error) {
+        console.error(error);
+        return { message: "An unexpected error occurred." };
+    }
+    
+    redirect('/');
 }

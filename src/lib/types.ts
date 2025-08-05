@@ -12,6 +12,8 @@ export type User = {
     createdBy?: ObjectId;
     otp?: string;
     otpExpires?: Date;
+    resetToken?: string;
+    resetTokenExpires?: Date;
 };
 
 export type Project = {
@@ -19,5 +21,4 @@ export type Project = {
     name: string;
     domain: string;
     clientId: ObjectId;
-    createdBy?: ObjectId;
-}
+    
