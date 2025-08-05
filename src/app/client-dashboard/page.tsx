@@ -25,17 +25,10 @@ import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-ke
 import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
+import { getAuditData } from "@/lib/seo";
 
 export default async function ClientDashboardPage() {
-    const auditData = {
-      authorityScore: 30,
-      organicSearchTraffic: 3600,
-      paidSearchTraffic: 126,
-      backlinks: 7000,
-      referringDomains: 731,
-      organicKeywords: 1000,
-      paidKeywords: 8,
-    };
+    const auditData = await getAuditData();
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -140,50 +133,52 @@ export default async function ClientDashboardPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="space-y-4 md:space-y-8">
-            <Card>
-              <CardHeader>
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <Tabs defaultValue="organic" className="w-full">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                      <div className="flex items-baseline gap-2">
-                        <TabsList>
-                          <TabsTrigger value="organic">Organic</TabsTrigger>
-                          <TabsTrigger value="paid">Paid</TabsTrigger>
-                        </TabsList>
-                        <h3 className="text-xl font-bold hidden lg:inline">Organic Traffic <span className="text-base font-normal text-muted-foreground">3,633/mo</span></h3>
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Tabs defaultValue="6m" className="hidden md:block">
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
+            <div className="lg:col-span-5 space-y-4 md:space-y-8">
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <Tabs defaultValue="organic" className="w-full">
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                        <div className="flex items-baseline gap-2">
                           <TabsList>
-                            <TabsTrigger value="1m">1M</TabsTrigger>
-                            <TabsTrigger value="6m">6M</TabsTrigger>
-                            <TabsTrigger value="1y">1Y</TabsTrigger>
-                            <TabsTrigger value="all">All</TabsTrigger>
+                            <TabsTrigger value="organic">Organic</TabsTrigger>
+                            <TabsTrigger value="paid">Paid</TabsTrigger>
                           </TabsList>
-                        </Tabs>
-                        <Button variant="outline" size="sm">
-                          <Upload className="mr-2 h-4 w-4" />
-                          Export
-                        </Button>
+                          <h3 className="text-xl font-bold hidden lg:inline">Organic Traffic <span className="text-base font-normal text-muted-foreground">3,633/mo</span></h3>
+                        </div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Tabs defaultValue="6m" className="hidden md:block">
+                            <TabsList>
+                              <TabsTrigger value="1m">1M</TabsTrigger>
+                              <TabsTrigger value="6m">6M</TabsTrigger>
+                              <TabsTrigger value="1y">1Y</TabsTrigger>
+                              <TabsTrigger value="all">All</TabsTrigger>
+                            </TabsList>
+                          </Tabs>
+                          <Button variant="outline" size="sm">
+                            <Upload className="mr-2 h-4 w-4" />
+                            Export
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </Tabs>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <TrafficOverview />
-              </CardContent>
-            </Card>
-            <div className="grid auto-rows-min gap-4 md:gap-8 md:grid-cols-2">
+                    </Tabs>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <TrafficOverview />
+                </CardContent>
+              </Card>
+            </div>
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-5 md:grid-cols-2">
               <CountryDistribution />
               <KeywordsByIntent />
             </div>
-            <div className="grid auto-rows-min gap-4 md:gap-8 md:grid-cols-2">
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-5 md:grid-cols-2">
                 <OrganicKeywordsChart />
                 <TopOrganicKeywords />
             </div>
-            <div className="grid gap-4 md:gap-8 lg:grid-cols-2 mt-4">
+            <div className="grid gap-4 md:gap-8 lg:grid-cols-2 mt-4 lg:col-span-5">
                 <MainOrganicCompetitors />
                 <CompetitivePositioningMap />
             </div>

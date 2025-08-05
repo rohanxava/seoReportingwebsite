@@ -21,4 +21,15 @@ export type Project = {
     name: string;
     domain: string;
     clientId: ObjectId;
+};
+
+export type AuditData = {
+    authorityScore: number;
+    organicSearchTraffic: number;
+    paidSearchTraffic: number;
+    backlinks: number;
+    referringDomains: number;
+    organicKeywords: number;
+    paidKeywords: number;
+};
     
