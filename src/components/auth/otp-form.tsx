@@ -2,8 +2,8 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useFormStatus, useActionState } from "react-dom";
-import React from "react";
+import { useFormStatus } from "react-dom";
+import React, { useActionState } from "react";
 import { LoaderCircle } from "lucide-react";
 import {
   Card,
