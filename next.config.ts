@@ -24,20 +24,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      // Don't resolve server-only modules on the client
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        dns: false,
-        child_process: false,
-        fs: false,
-        net: false,
-        tls: false,
-      };
-    }
-    return config;
-  },
 };
 
 export default nextConfig;

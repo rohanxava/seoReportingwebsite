@@ -1,3 +1,4 @@
+'use server';
 
 import clientPromise from "@/lib/mongodb";
 import type { User } from "@/lib/types";

@@ -1,3 +1,4 @@
+'use server';
 
 import Image from "next/image";
 import Link from "next/link";
@@ -53,68 +54,82 @@ export default async function ClientsPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="hidden md:block">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Client</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+           {clients.length === 0 ? (
+             <div className="text-center text-muted-foreground py-12">
+                <p>You haven't added any clients yet.</p>
+                <Button asChild className="mt-4">
+                  <Link href="/dashboard/clients/new">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Add Your First Client
+                  </Link>
+                </Button>
+            </div>
+           ) : (
+            <>
+              <div className="hidden md:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Client</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {clients.map((client) => (
+                      <TableRow key={client._id.toString()}>
+                        <TableCell className="font-medium flex items-center gap-3">
+                          <Image
+                            src={client.logoUrl || 'https://placehold.co/32x32.png'}
+                            alt={client.name}
+                            width={32}
+                            height={32}
+                            className="rounded-full"
+                            data-ai-hint="logo"
+                          />
+                          {client.name}
+                        </TableCell>
+                        <TableCell>
+                          <Button asChild variant="outline" size="sm">
+                            <Link href={`/dashboard/clients/${client._id.toString()}`}>
+                              View Details
+                            </Link>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="md:hidden space-y-4">
                 {clients.map((client) => (
-                  <TableRow key={client._id.toString()}>
-                    <TableCell className="font-medium flex items-center gap-3">
-                      <Image
-                        src={client.logoUrl || 'https://placehold.co/32x32.png'}
-                        alt={client.name}
-                        width={32}
-                        height={32}
-                        className="rounded-full"
-                        data-ai-hint="logo"
-                      />
-                      {client.name}
-                    </TableCell>
-                    <TableCell>
-                      <Button asChild variant="outline" size="sm">
+                  <Card key={client._id.toString()}>
+                    <CardHeader>
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src={client.logoUrl || 'https://placehold.co/40x40.png'}
+                          alt={client.name}
+                          width={40}
+                          height={40}
+                          className="rounded-full"
+                          data-ai-hint="logo"
+                        />
+                        <div>
+                          <CardTitle className="text-lg">{client.name}</CardTitle>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <Button asChild variant="outline" className="w-full">
                         <Link href={`/dashboard/clients/${client._id.toString()}`}>
                           View Details
                         </Link>
                       </Button>
-                    </TableCell>
-                  </TableRow>
+                    </CardContent>
+                  </Card>
                 ))}
-              </TableBody>
-            </Table>
-          </div>
-          <div className="md:hidden space-y-4">
-            {clients.map((client) => (
-              <Card key={client._id.toString()}>
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src={client.logoUrl || 'https://placehold.co/40x40.png'}
-                      alt={client.name}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                      data-ai-hint="logo"
-                    />
-                    <div>
-                      <CardTitle className="text-lg">{client.name}</CardTitle>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Button asChild variant="outline" className="w-full">
-                    <Link href={`/dashboard/clients/${client._id.toString()}`}>
-                      View Details
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+              </div>
+            </>
+           )}
         </CardContent>
       </Card>
     </div>

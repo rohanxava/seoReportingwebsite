@@ -1,3 +1,4 @@
+'use server';
 
 import Image from "next/image";
 import {
@@ -81,7 +82,7 @@ export default async function ClientDetailsPage({
         </CardHeader>
         <CardContent>
           <h3 className="font-headline text-lg mb-2">Projects</h3>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {clientProjects.map((project) => (
               <Card key={project._id.toString()}>
                 <CardHeader>
@@ -95,6 +96,9 @@ export default async function ClientDetailsPage({
                 </CardContent>
               </Card>
             ))}
+             {clientProjects.length === 0 && (
+              <p className="text-muted-foreground md:col-span-2 lg:col-span-3">No projects found for this client.</p>
+            )}
           </div>
         </CardContent>
       </Card>

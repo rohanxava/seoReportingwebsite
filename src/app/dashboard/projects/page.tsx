@@ -1,3 +1,4 @@
+'use server';
 
 import {
   Table,
@@ -96,60 +97,74 @@ export default async function ProjectsPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          <div className="hidden md:block">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Project Name</TableHead>
-                  <TableHead>Client</TableHead>
-                  <TableHead>Domain</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+          {projects.length === 0 ? (
+             <div className="text-center text-muted-foreground py-12">
+                <p>You haven't created any projects yet.</p>
+                <Button asChild className="mt-4">
+                  <Link href="/dashboard/projects/new">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Create Your First Project
+                  </Link>
+                </Button>
+            </div>
+          ) : (
+            <>
+              <div className="hidden md:block">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Project Name</TableHead>
+                      <TableHead>Client</TableHead>
+                      <TableHead>Domain</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {projects.map((project) => (
+                      <TableRow key={project._id.toString()}>
+                        <TableCell className="font-medium">{project.name}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {getClientName(project.clientId.toString())}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{project.domain}</TableCell>
+                        <TableCell>
+                          <Button asChild variant="outline" size="sm">
+                            <Link href={`/dashboard/reports/${project._id.toString()}`}>
+                              <FileText className="mr-2 h-4 w-4" />
+                              Generate Report
+                            </Link>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="md:hidden space-y-4">
                 {projects.map((project) => (
-                  <TableRow key={project._id.toString()}>
-                    <TableCell className="font-medium">{project.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {getClientName(project.clientId.toString())}
+                  <Card key={project._id.toString()}>
+                    <CardHeader>
+                        <CardTitle className="text-lg">{project.name}</CardTitle>
+                        <CardDescription>{project.domain}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-4">
+                      <Badge variant="outline" className="w-fit">
+                            {getClientName(project.clientId.toString())}
                       </Badge>
-                    </TableCell>
-                    <TableCell>{project.domain}</TableCell>
-                    <TableCell>
                       <Button asChild variant="outline" size="sm">
-                        <Link href={`/dashboard/reports/${project._id.toString()}`}>
-                          <FileText className="mr-2 h-4 w-4" />
-                          Generate Report
-                        </Link>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                            <Link href={`/dashboard/reports/${project._id.toString()}`}>
+                              <FileText className="mr-2 h-4 w-4" />
+                              Generate Report
+                            </Link>
+                          </Button>
+                    </CardContent>
+                  </Card>
                 ))}
-              </TableBody>
-            </Table>
-          </div>
-          <div className="md:hidden space-y-4">
-            {projects.map((project) => (
-              <Card key={project._id.toString()}>
-                <CardHeader>
-                    <CardTitle className="text-lg">{project.name}</CardTitle>
-                    <CardDescription>{project.domain}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4">
-                  <Badge variant="outline" className="w-fit">
-                        {getClientName(project.clientId.toString())}
-                  </Badge>
-                   <Button asChild variant="outline" size="sm">
-                        <Link href={`/dashboard/reports/${project._id.toString()}`}>
-                          <FileText className="mr-2 h-4 w-4" />
-                          Generate Report
-                        </Link>
-                      </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
