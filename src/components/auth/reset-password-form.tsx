@@ -83,4 +83,9 @@ export function ResetPasswordForm({ resetPassword }: { resetPassword: (prevState
               </p>
             )}
           </div>
-          <SubmitButton
+          <SubmitButton />
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
