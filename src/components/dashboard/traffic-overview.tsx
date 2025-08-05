@@ -10,6 +10,23 @@ import {
 import { trafficOverviewData, trafficChartConfig } from "@/lib/data";
 import { Checkbox } from "../ui/checkbox";
 
+const CustomLegend = (props: any) => {
+  const { payload } = props;
+  return (
+    <div className="flex justify-start gap-4 p-4">
+      {payload.map((entry: any, index: number) => (
+        <div key={`item-${index}`} className="flex items-center gap-2">
+          <Checkbox id={entry.dataKey} defaultChecked style={{ color: entry.color }} />
+          <label htmlFor={entry.dataKey} className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+            {entry.value}
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+
 export function TrafficOverview() {
   return (
       <ChartContainer config={trafficChartConfig} className="h-[350px] w-full">
@@ -33,22 +50,7 @@ export function TrafficOverview() {
                 cursor={false}
                 content={<ChartTooltipContent indicator="line" />}
             />
-             <Legend content={
-                <div className="flex justify-start gap-4 p-4">
-                    <div className="flex items-center gap-2">
-                        <Checkbox id="organic" defaultChecked />
-                        <label htmlFor="organic" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Organic Traffic
-                        </label>
-                    </div>
-                     <div className="flex items-center gap-2">
-                        <Checkbox id="paid" defaultChecked />
-                        <label htmlFor="paid" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                           Paid Traffic
-                        </label>
-                    </div>
-                </div>
-             } />
+             <Legend content={<CustomLegend />} />
             <Line
               dataKey="organic"
               type="monotone"
