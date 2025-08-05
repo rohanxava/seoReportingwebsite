@@ -4,10 +4,12 @@ import { suggestKeywords } from "@/ai/flows/suggest-keywords-to-target";
 import { suggestContentImprovements } from "@/ai/flows/suggest-content-improvements";
 import { suggestMetaDescription } from "@/ai/flows/suggest-meta-description";
 import { suggestBlogIdeas } from "@/ai/flows/suggest-blog-ideas";
-import { getProjects } from "../actions/project";
 
-export async function DashboardHeader() {
-  const projects = await getProjects();
+interface DashboardHeaderProps {
+  projects: Project[];
+}
+
+export async function DashboardHeader({ projects }: DashboardHeaderProps) {
   return (
     <DashboardHeaderClient 
         projects={projects}
