@@ -157,15 +157,18 @@ export async function verifyOtp(prevState: any, formData: FormData) {
 
         const user = await usersCollection.findOne({ email });
 
-        if (!user || user.otp !== otp) {
+        if (!user) {
+             return { message: "User not found." };
+        }
+
+        if (user.otp !== otp) {
             return { message: "Invalid OTP. Please try again." };
         }
 
-        if (!user.otpExpires || user.otpExpires < new Date()) {
+        if (!user.otpExpires || new Date(user.otpExpires) < new Date()) {
             return { message: "OTP has expired. Please log in again to get a new one." };
         }
 
-        // Clear OTP after successful verification
         await usersCollection.updateOne(
             { _id: new ObjectId(user._id) },
             { $unset: { otp: "", otpExpires: "" } }
@@ -176,6 +179,6 @@ export async function verifyOtp(prevState: any, formData: FormData) {
 
     } catch (error) {
         console.error(error);
-        return { message: "An unexpected error occurred." };
+        return { message: "An unexpected error occurred during OTP verification." };
     }
 }
