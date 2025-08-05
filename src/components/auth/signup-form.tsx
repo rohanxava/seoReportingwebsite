@@ -2,8 +2,9 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Activity } from "lucide-react";
+import { useFormState, useFormStatus } from "react-dom";
+import React from "react";
+import { Activity, LoaderCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,16 +16,32 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signupUser } from "@/app/actions/auth";
+import { useToast } from "@/hooks/use-toast";
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" className="w-full" disabled={pending}>
+            {pending && <LoaderCircle className="mr-2 animate-spin" />}
+            Create Account
+        </Button>
+    )
+}
 
 export function SignupForm() {
-  const router = useRouter();
+  const [state, formAction] = useFormState(signupUser, null);
+  const { toast } = useToast();
 
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, you'd handle user creation here.
-    // For this prototype, we'll just redirect to the dashboard.
-    router.push("/dashboard");
-  };
+  React.useEffect(() => {
+    if (state?.message) {
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: state.message,
+      });
+    }
+  }, [state, toast]);
 
   return (
     <Card className="w-full max-w-sm">
@@ -38,27 +55,29 @@ export function SignupForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSignup} className="grid gap-4">
+        <form action={formAction} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="agency-name">Agency Name</Label>
-            <Input id="agency-name" placeholder="Your Agency" required />
+            <Input id="agency-name" name="agencyName" placeholder="Your Agency" required />
+            {state?.errors?.agencyName && <p className="text-sm font-medium text-destructive">{state.errors.agencyName}</p>}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="you@example.com"
               required
             />
+             {state?.errors?.email && <p className="text-sm font-medium text-destructive">{state.errors.email}</p>}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
+            <Input id="password" name="password" type="password" required />
+             {state?.errors?.password && <p className="text-sm font-medium text-destructive">{state.errors.password}</p>}
           </div>
-          <Button type="submit" className="w-full">
-            Create Account
-          </Button>
+          <SubmitButton />
         </form>
         <div className="mt-4 text-center text-sm">
           Already have an account?{" "}

@@ -2,8 +2,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Activity } from "lucide-react";
+import { useFormState, useFormStatus } from "react-dom";
+import { Activity, LoaderCircle } from "lucide-react";
 import React from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,21 +16,33 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { loginUser } from "@/app/actions/auth";
+import { useToast } from "@/hooks/use-toast";
+
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <Button type="submit" className="w-full" disabled={pending}>
+            {pending && <LoaderCircle className="mr-2 animate-spin" />}
+            Sign In
+        </Button>
+    )
+}
 
 export function LoginForm() {
-  const router = useRouter();
-  const [email, setEmail] = React.useState("rohangoyal8807@gmail.com");
+  const [state, formAction] = useFormState(loginUser, null);
+  const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    let redirectUrl = "/dashboard"; // Default to admin dashboard
-    if (email === "jerrygoel499@gmail.com") {
-      redirectUrl = "/client-dashboard";
+  React.useEffect(() => {
+    if (state?.message) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: state.message,
+      });
     }
+  }, [state, toast]);
 
-    router.push(`/otp?redirect=${redirectUrl}`);
-  };
 
   return (
     <Card className="w-full max-w-sm">
@@ -44,16 +56,16 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleLogin} className="grid gap-4">
+        <form action={formAction} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="m@example.com"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              defaultValue="agency@example.com"
             />
           </div>
           <div className="grid gap-2">
@@ -66,11 +78,9 @@ export function LoginForm() {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" type="password" required defaultValue="password" />
+            <Input id="password" name="password" type="password" required defaultValue="password" />
           </div>
-          <Button type="submit" className="w-full">
-            Sign In
-          </Button>
+          <SubmitButton />
         </form>
         <div className="mt-4 text-center text-sm">
           Don&apos;t have an account?{" "}
