@@ -18,24 +18,12 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import clientPromise from "@/lib/mongodb";
+import { getClients } from "@/app/actions/client";
 import type { User } from "@/lib/types";
-
-async function getClients(): Promise<User[]> {
-    try {
-        const client = await clientPromise;
-        const db = client.db('seoAudit');
-        const users = await db.collection('users').find({ role: 'client' }).toArray();
-        return JSON.parse(JSON.stringify(users));
-    } catch (error) {
-        console.error('Failed to fetch clients:', error);
-        return [];
-    }
-}
 
 
 export default async function ClientsPage() {
-    const clients = await getClients();
+    const clients: User[] = await getClients();
 
   return (
     <div className="p-4 md:p-8">
@@ -63,7 +51,7 @@ export default async function ClientsPage() {
               </TableHeader>
               <TableBody>
                 {clients.map((client) => (
-                  <TableRow key={client._id}>
+                  <TableRow key={client._id.toString()}>
                     <TableCell className="font-medium flex items-center gap-3">
                       <Image
                         src={client.logoUrl || 'https://placehold.co/32x32.png'}
@@ -77,7 +65,7 @@ export default async function ClientsPage() {
                     </TableCell>
                     <TableCell>
                       <Button asChild variant="outline" size="sm">
-                        <Link href={`/dashboard/clients/${client._id}`}>
+                        <Link href={`/dashboard/clients/${client._id.toString()}`}>
                           View Details
                         </Link>
                       </Button>
@@ -89,7 +77,7 @@ export default async function ClientsPage() {
           </div>
           <div className="md:hidden space-y-4">
             {clients.map((client) => (
-              <Card key={client._id}>
+              <Card key={client._id.toString()}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <Image
@@ -107,7 +95,7 @@ export default async function ClientsPage() {
                 </CardHeader>
                 <CardContent>
                   <Button asChild variant="outline" className="w-full">
-                    <Link href={`/dashboard/clients/${client._id}`}>
+                    <Link href={`/dashboard/clients/${client._id.toString()}`}>
                       View Details
                     </Link>
                   </Button>

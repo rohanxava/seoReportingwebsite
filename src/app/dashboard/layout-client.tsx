@@ -89,7 +89,7 @@ export function DashboardLayoutClient({
             <SidebarMenu>
                 {clients.map(client => (
                     <SidebarMenuItem key={client._id.toString()}>
-                        <SidebarMenuButton href={`/dashboard/clients/${client._id}`} isActive={pathname === `/dashboard/clients/${client._id}`}>
+                        <SidebarMenuButton href={`/dashboard/clients/${client._id.toString()}`} isActive={pathname === `/dashboard/clients/${client._id.toString()}`}>
                             <Image src={client.logoUrl || 'https://placehold.co/20x20.png'} alt={client.name} width={20} height={20} className="rounded-full" data-ai-hint="logo" />
                             {client.name}
                         </SidebarMenuButton>

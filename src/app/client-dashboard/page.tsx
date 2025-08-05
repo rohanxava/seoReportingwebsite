@@ -24,10 +24,17 @@ import { TopOrganicKeywords } from "@/components/dashboard/top-organic-keywords"
 import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
-import { getDomainAudit } from "@/ai/flows/get-domain-audit";
 
 export default async function ClientDashboardPage() {
-  const auditData = await getDomainAudit({ domain: "innovate.com" });
+    const auditData = {
+      authorityScore: 30,
+      organicSearchTraffic: 3600,
+      paidSearchTraffic: 126,
+      backlinks: 7000,
+      referringDomains: 731,
+      organicKeywords: 1000,
+      paidKeywords: 8,
+    };
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
