@@ -149,6 +149,7 @@ export async function verifyOtp(prevState: any, formData: FormData) {
     }
 
     const { email, otp } = validatedFields.data;
+    let redirectUrl;
 
     try {
         const client = await clientPromise;
@@ -174,11 +175,12 @@ export async function verifyOtp(prevState: any, formData: FormData) {
             { $unset: { otp: "", otpExpires: "" } }
         );
         
-        const redirectUrl = user.role === 'client' ? '/client-dashboard' : '/dashboard';
-        redirect(redirectUrl);
+        redirectUrl = user.role === 'client' ? '/client-dashboard' : '/dashboard';
 
     } catch (error) {
         console.error(error);
         return { message: "An unexpected error occurred during OTP verification." };
     }
+
+    redirect(redirectUrl);
 }
