@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signupUser } from "@/app/actions/auth";
 import { useToast } from "@/hooks/use-toast";
 
 function SubmitButton() {
@@ -29,7 +28,7 @@ function SubmitButton() {
     )
 }
 
-export function SignupForm() {
+export function SignupForm({ signupUser }: { signupUser: (prevState: any, formData: FormData) => Promise<any> }) {
   const [state, formAction] = React.useActionState(signupUser, null);
   const { toast } = useToast();
 
