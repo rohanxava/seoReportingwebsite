@@ -21,11 +21,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { addProject } from "@/app/actions/project";
 import type { User } from "@/lib/types";
 import { Label } from "@/components/ui/label";
+import clientPromise from "@/lib/mongodb";
+
+async function getClients(): Promise<User[]> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        return JSON.parse(JSON.stringify(users));
+    } catch (error) {
+        console.error('Failed to fetch clients:', error);
+        return [];
+    }
+}
+
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -37,15 +51,21 @@ const SubmitButton = () => {
   );
 };
 
-export default function NewProjectPage({
-  searchParams,
-}: {
-  searchParams: { clients: string };
-}) {
+export default function NewProjectPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [state, formAction] = useActionState(addProject, null);
-  const clients: User[] = JSON.parse(searchParams.clients || "[]");
+  const [clients, setClients] = useState<User[]>([]);
+
+  useEffect(() => {
+    async function fetchClients() {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        setClients(JSON.parse(JSON.stringify(users)));
+    }
+    fetchClients();
+  }, []);
 
   useEffect(() => {
     if (state?.success) {
