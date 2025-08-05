@@ -1,5 +1,6 @@
 
 import nodemailer from 'nodemailer';
+import type { ReportData } from '@/app/actions/report';
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.sendgrid.net',
@@ -119,5 +120,52 @@ export async function sendPasswordResetEmail(to: string, resetLink: string) {
     } catch (error) {
         console.error('Error sending password reset email:', error);
         throw new Error('Could not send password reset email.');
+    }
+}
+
+
+export async function sendReportEmail(to: string, reportData: ReportData) {
+    const { project, client, generatedAt, auditData } = reportData;
+    const mailOptions = {
+        from: process.env.SMTP_USER,
+        to: to,
+        subject: `Your SEO Performance Report for ${project.name}`,
+        html: `
+            <div style="font-family: Arial, sans-serif; color: #333; max-width: 800px; margin: auto; border: 1px solid #eee; padding: 20px;">
+                <h1 style="color: #007bff;">SEO Performance Report</h1>
+                <p>Hi ${client.name},</p>
+                <p>Here is your latest SEO performance report for <strong>${project.name}</strong> (${project.domain}), generated on ${generatedAt}.</p>
+                
+                <h2 style="color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 5px; margin-top: 30px;">Key Metrics Overview</h2>
+                <table style="width: 100%; text-align: center; margin-top: 20px;">
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #eee;">
+                            <div style="font-size: 14px; color: #666;">Authority Score</div>
+                            <div style="font-size: 24px; font-weight: bold; color: #007bff;">${auditData.authorityScore}</div>
+                        </td>
+                        <td style="padding: 10px; border: 1px solid #eee;">
+                             <div style="font-size: 14px; color: #666;">Organic Traffic</div>
+                            <div style="font-size: 24px; font-weight: bold;">${(auditData.organicSearchTraffic / 1000).toFixed(1)}K</div>
+                        </td>
+                        <td style="padding: 10px; border: 1px solid #eee;">
+                            <div style="font-size: 14px; color: #666;">Backlinks</div>
+                            <div style="font-size: 24px; font-weight: bold;">${(auditData.backlinks / 1000).toFixed(0)}K</div>
+                        </td>
+                    </tr>
+                </table>
+
+                <p style="margin-top: 30px;">You can view the full interactive report in your client portal.</p>
+                
+                <p style="margin-top: 30px;">Best regards,<br><strong>The SEO Clarity Team</strong></p>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log('Report email sent successfully to', to);
+    } catch (error) {
+        console.error('Error sending report email:', error);
+        throw new Error('Could not send report email.');
     }
 }

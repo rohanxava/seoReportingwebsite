@@ -4,6 +4,7 @@
 import clientPromise from '@/lib/mongodb';
 import { getAuditData } from '@/lib/seo';
 import type { Project, User, AuditData } from '@/lib/types';
+import { sendReportEmail } from '@/lib/mail';
 import { ObjectId } from 'mongodb';
 
 export interface ReportData {
@@ -50,5 +51,16 @@ export async function getProjectForReport(projectId: string): Promise<ReportData
     } catch (error) {
         console.error('Failed to fetch project for report:', error);
         return null;
+    }
+}
+
+
+export async function emailReportToClient(reportData: ReportData) {
+    try {
+        await sendReportEmail(reportData.client.email, reportData);
+        return { success: true, message: `Report sent successfully to ${reportData.client.email}` };
+    } catch (error) {
+        console.error('Failed to send report email:', error);
+        return { success: false, message: 'An unexpected error occurred while sending the email.' };
     }
 }

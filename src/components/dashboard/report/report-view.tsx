@@ -1,22 +1,48 @@
 
 'use client';
 
+import { useState } from "react";
 import type { ReportData } from "@/app/actions/report";
+import { emailReportToClient } from "@/app/actions/report";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import {
-  ArrowDown,
-  ArrowUp,
-  Circle,
-  Globe,
-  Link as LinkIcon,
-  PieChart,
-  Printer,
-} from "lucide-react";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import { TrafficOverview } from "../traffic-overview";
+import { CountryDistribution } from "../country-distribution";
+import { KeywordsByIntent } from "../keywords-by-intent";
+import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
+import { MainOrganicCompetitors } from "../main-organic-competitors";
+import { CompetitivePositioningMap } from "../competitive-positioning-map";
+import { LoaderCircle, Mail, Printer } from "lucide-react";
 
 export function ReportView({ reportData }: { reportData: ReportData }) {
   const { project, client, auditData, generatedAt } = reportData;
+  const { toast } = useToast();
+  const [isSending, setIsSending] = useState(false);
+
+  const handleSendReport = async () => {
+    setIsSending(true);
+    const result = await emailReportToClient(reportData);
+    if (result.success) {
+      toast({
+        title: "Report Sent",
+        description: result.message,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: result.message,
+      });
+    }
+    setIsSending(false);
+  };
 
   return (
     <div className="p-4 md:p-8 bg-background">
@@ -30,113 +56,106 @@ export function ReportView({ reportData }: { reportData: ReportData }) {
               Report for: <strong>{project.name}</strong> ({project.domain})
             </p>
           </div>
-          <div className="text-left sm:text-right">
+          <div className="flex items-center gap-2">
+            <Button onClick={handleSendReport} disabled={isSending}>
+              {isSending ? (
+                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Mail className="mr-2 h-4 w-4" />
+              )}
+              Send Report
+            </Button>
+            <Button onClick={() => window.print()} variant="outline">
+              <Printer className="mr-2 h-4 w-4" />
+              Print / Download
+            </Button>
+          </div>
+        </div>
+        <div className="text-left sm:text-right mb-8">
             <p className="text-sm">
               Client: <strong>{client.name}</strong>
             </p>
             <p className="text-sm text-muted-foreground">
               Generated on: {generatedAt}
             </p>
-          </div>
-           <Button onClick={() => window.print()} className="mt-4 sm:mt-0">
-                <Printer className="mr-2 h-4 w-4" />
-                Print Report
-            </Button>
         </div>
 
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Key Metrics Overview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              <div className="p-4 border rounded-lg">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Authority Score
-                </h3>
-                <p className="text-3xl font-bold text-primary">
-                  {auditData.authorityScore}
-                </p>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Organic Traffic
-                </h3>
-                <p className="text-3xl font-bold">
-                  {(auditData.organicSearchTraffic / 1000).toFixed(1)}K
-                </p>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Paid Traffic
-                </h3>
-                <p className="text-3xl font-bold">
-                  {auditData.paidSearchTraffic}
-                </p>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  Backlinks
-                </h3>
-                <p className="text-3xl font-bold">
-                  {(auditData.backlinks / 1000).toFixed(0)}K
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <div className="grid md:grid-cols-2 gap-8">
+
+        <div className="space-y-8">
             <Card>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-lg font-medium flex items-center justify-between">
-                    Organic Search
-                    <Globe className="h-5 w-5 text-muted-foreground" />
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="text-4xl font-bold">
-                        {(auditData.organicSearchTraffic / 1000).toFixed(1)}K
-                    </div>
-                    <div className="flex items-center text-sm text-red-500">
-                        -0.2%
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">Keywords</span>
-                        <div className="font-semibold flex items-center gap-1">
-                            {(auditData.organicKeywords / 1000).toFixed(0)}K
-                            <ArrowUp className="h-4 w-4 text-green-500" />
-                        </div>
-                    </div>
-                </CardContent>
+            <CardHeader>
+                <CardTitle>Key Metrics Overview</CardTitle>
+                <CardDescription>
+                A snapshot of the most important SEO performance indicators for the
+                domain.
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                <div className="p-4 border rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                    Authority Score
+                    </h3>
+                    <p className="text-3xl font-bold text-primary">
+                    {auditData.authorityScore}
+                    </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                    Organic Traffic
+                    </h3>
+                    <p className="text-3xl font-bold">
+                    {(auditData.organicSearchTraffic / 1000).toFixed(1)}K
+                    </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                    Paid Traffic
+                    </h3>
+                    <p className="text-3xl font-bold">
+                    {auditData.paidSearchTraffic}
+                    </p>
+                </div>
+                <div className="p-4 border rounded-lg">
+                    <h3 className="text-sm font-medium text-muted-foreground">
+                    Backlinks
+                    </h3>
+                    <p className="text-3xl font-bold">
+                    {(auditData.backlinks / 1000).toFixed(0)}K
+                    </p>
+                </div>
+                </div>
+            </CardContent>
             </Card>
 
             <Card>
-                <CardHeader className="pb-2">
-                    <CardTitle className="text-lg font-medium flex items-center justify-between">
-                    Backlink Profile
-                    <LinkIcon className="h-5 w-5 text-muted-foreground" />
-                    </CardTitle>
+                <CardHeader>
+                    <CardTitle>Traffic Overview</CardTitle>
+                    <CardDescription>
+                        Monthly organic vs. paid traffic trends.
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="text-4xl font-bold">
-                        {(auditData.backlinks / 1000).toFixed(0)}K
-                    </div>
-                     <p className="text-sm text-muted-foreground">from {auditData.referringDomains} domains</p>
-                    <Separator className="my-4" />
-                    <div className="text-xs text-muted-foreground">
-                        A strong backlink profile is crucial for improving domain authority and search rankings.
-                    </div>
+                    <TrafficOverview data={auditData.trafficOverviewData} />
                 </CardContent>
             </Card>
+
+            <div className="grid md:grid-cols-2 gap-8">
+                <CountryDistribution data={auditData.countryDistributionData} />
+                <KeywordsByIntent data={auditData.keywordsByIntentData} />
+            </div>
+
+            <TopOrganicKeywords data={auditData.topOrganicKeywordsData} />
+
+             <div className="grid md:grid-cols-2 gap-8">
+                <MainOrganicCompetitors data={auditData.mainOrganicCompetitorsData} />
+                <CompetitivePositioningMap data={auditData.competitivePositioningData} />
+            </div>
         </div>
 
 
         <div className="mt-12 text-center text-xs text-muted-foreground">
-          <p>
-            This report was generated by SEO Clarity.
-          </p>
+          <p>This report was generated by SEO Clarity.</p>
           <p>
             The data is based on a snapshot from our latest audit and is
             intended for informational purposes.
