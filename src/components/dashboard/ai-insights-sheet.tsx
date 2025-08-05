@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -27,13 +28,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import {
-  suggestKeywords,
+import type {
   SuggestKeywordsInput,
   SuggestKeywordsOutput,
 } from "@/ai/flows/suggest-keywords-to-target";
-import {
-  suggestContentImprovements,
+import type {
   SuggestContentImprovementsInput,
   SuggestContentImprovementsOutput,
 } from "@/ai/flows/suggest-content-improvements";
@@ -51,7 +50,12 @@ const contentSchema = z.object({
   targetKeyword: z.string().min(1, "Target keyword is required."),
 });
 
-export function AiInsightsSheet() {
+interface AiInsightsSheetProps {
+    suggestKeywords: (input: SuggestKeywordsInput) => Promise<SuggestKeywordsOutput>;
+    suggestContentImprovements: (input: SuggestContentImprovementsInput) => Promise<SuggestContentImprovementsOutput>;
+}
+
+export function AiInsightsSheet({ suggestKeywords, suggestContentImprovements }: AiInsightsSheetProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [keywordResult, setKeywordResult] = useState<SuggestKeywordsOutput | null>(null);

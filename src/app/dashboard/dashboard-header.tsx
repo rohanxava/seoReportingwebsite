@@ -2,6 +2,8 @@
 import clientPromise from "@/lib/mongodb";
 import type { Project } from "@/lib/types";
 import { DashboardHeader as DashboardHeaderClient } from "@/components/dashboard/dashboard-header";
+import { suggestKeywords } from "@/ai/flows/suggest-keywords-to-target";
+import { suggestContentImprovements } from "@/ai/flows/suggest-content-improvements";
 
 async function getProjects(): Promise<Project[]> {
     try {
@@ -19,6 +21,10 @@ async function getProjects(): Promise<Project[]> {
 export async function DashboardHeader() {
   const projects = await getProjects();
   return (
-    <DashboardHeaderClient projects={projects} />
+    <DashboardHeaderClient 
+        projects={projects}
+        suggestKeywords={suggestKeywords}
+        suggestContentImprovements={suggestContentImprovements}
+     />
   );
 }

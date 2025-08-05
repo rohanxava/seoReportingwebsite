@@ -12,8 +12,16 @@ import { AiInsightsSheet } from "./ai-insights-sheet";
 import type { Project } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import type { SuggestKeywordsInput, SuggestKeywordsOutput } from "@/ai/flows/suggest-keywords-to-target";
+import type { SuggestContentImprovementsInput, SuggestContentImprovementsOutput } from "@/ai/flows/suggest-content-improvements";
 
-export function DashboardHeader({ projects }: { projects: Project[] }) {
+interface DashboardHeaderProps {
+    projects: Project[];
+    suggestKeywords: (input: SuggestKeywordsInput) => Promise<SuggestKeywordsOutput>;
+    suggestContentImprovements: (input: SuggestContentImprovementsInput) => Promise<SuggestContentImprovementsOutput>;
+}
+
+export function DashboardHeader({ projects, suggestKeywords, suggestContentImprovements }: DashboardHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -58,7 +66,10 @@ export function DashboardHeader({ projects }: { projects: Project[] }) {
             ))}
           </SelectContent>
         </Select>
-        <AiInsightsSheet />
+        <AiInsightsSheet 
+            suggestKeywords={suggestKeywords}
+            suggestContentImprovements={suggestContentImprovements}
+        />
       </div>
     </div>
   );

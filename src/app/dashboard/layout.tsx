@@ -10,7 +10,9 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const clients: User[] = await getClients();
+  const clientsData: User[] = await getClients();
+  // Ensure the data passed to the client component is serializable
+  const clients = JSON.parse(JSON.stringify(clientsData));
   
   return (
     <DashboardLayoutClient 
