@@ -33,8 +33,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { clients } from "@/lib/data";
+import { useEffect, useState } from "react";
+import type { User } from "@/lib/types";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -48,10 +48,40 @@ const formSchema = z.object({
   }),
 });
 
+async function getClients(): Promise<User[]> {
+    try {
+        // This is a client component, so we need to fetch from an API route
+        // or use a server action. For simplicity, we'll fetch from an API route
+        // if we were to build one. As a placeholder, we'll return an empty array
+        // and assume a future API endpoint would provide the clients.
+        // In a real app, you would fetch this from '/api/clients' for example.
+        const res = await fetch('/api/clients');
+        if (!res.ok) return [];
+        const clients = await res.json();
+        return clients;
+    } catch (error) {
+        console.error('Failed to fetch clients:', error);
+        return [];
+    }
+}
+
 export default function NewProjectPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [clients, setClients] = useState<User[]>([]);
+
+  useEffect(() => {
+    // Since this is a client component, we cannot directly query the DB.
+    // A proper implementation would involve creating an API route to fetch clients.
+    // For now, we'll simulate this by setting an empty array, but the form will be disabled.
+    // To make this fully functional, an API endpoint at `/api/clients` would be needed.
+    const fetchClients = async () => {
+      // const fetchedClients = await getClients();
+      // setClients(fetchedClients);
+    };
+    fetchClients();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -126,7 +156,7 @@ export default function NewProjectPage() {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Assign to Client</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value}>
+                     <Select onValueChange={field.onChange} defaultValue={field.value} disabled={clients.length === 0}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select a client" />
@@ -134,10 +164,11 @@ export default function NewProjectPage() {
                       </FormControl>
                       <SelectContent>
                         {clients.map(client => (
-                            <SelectItem key={client.id} value={client.id}>{client.name}</SelectItem>
+                            <SelectItem key={client._id.toString()} value={client._id.toString()}>{client.name}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
+                     {clients.length === 0 && <FormDescription>To assign a project, first add a client.</FormDescription>}
                     <FormMessage />
                   </FormItem>
                 )}

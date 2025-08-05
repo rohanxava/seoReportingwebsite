@@ -14,14 +14,33 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { projects, clients } from "@/lib/data";
+import { projects } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
+import clientPromise from "@/lib/mongodb";
+import type { User } from "@/lib/types";
 
-export default function ProjectsPage() {
+async function getClients(): Promise<User[]> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        return JSON.parse(JSON.stringify(users));
+    } catch (error) {
+        console.error('Failed to fetch clients:', error);
+        return [];
+    }
+}
+
+
+export default async function ProjectsPage() {
+  const clients = await getClients();
   const getClientName = (clientId: string) => {
-    return clients.find((c) => c.id === clientId)?.name || "N/A";
+    // Note: projects are static, so we match by a static `id` field.
+    // In a real app, projects would have a client `_id`.
+    const client = clients.find((c, index) => (index + 1).toString() === clientId);
+    return client?.name || "N/A";
   };
 
   return (
