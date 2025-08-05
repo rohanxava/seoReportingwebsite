@@ -1,6 +1,11 @@
 
+
+import { ObjectId } from "mongodb";
+
 export type User = {
-    id: string;
+    _id: ObjectId;
     name: string;
-    logo: string;
+    email: string;
+    logoUrl?: string;
+    role: 'admin' | 'client';
 };

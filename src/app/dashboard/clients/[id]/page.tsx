@@ -9,15 +9,31 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { clients, projects } from "@/lib/data";
+import { projects } from "@/lib/data";
 import Link from "next/link";
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
+import type { User } from "@/lib/types";
 
-export default function ClientDetailsPage({
+async function getClient(id: string): Promise<User | null> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const user = await db.collection('users').findOne({ _id: new ObjectId(id) });
+        return JSON.parse(JSON.stringify(user));
+    } catch (error) {
+        console.error('Failed to fetch client:', error);
+        return null;
+    }
+}
+
+export default async function ClientDetailsPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const client = clients.find((c) => c.id === params.id);
+  const client = await getClient(params.id);
+  // Projects are still static for now
   const clientProjects = projects.filter((p) => p.clientId === params.id);
 
   if (!client) {
@@ -39,7 +55,7 @@ export default function ClientDetailsPage({
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
           <Image
-            src={client.logo}
+            src={client.logoUrl || 'https://placehold.co/64x64.png'}
             alt={client.name}
             width={64}
             height={64}

@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,10 +17,26 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { clients } from "@/lib/data";
 import { PlusCircle } from "lucide-react";
+import clientPromise from "@/lib/mongodb";
+import type { User } from "@/lib/types";
 
-export default function ClientsPage() {
+async function getClients(): Promise<User[]> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        return JSON.parse(JSON.stringify(users));
+    } catch (error) {
+        console.error('Failed to fetch clients:', error);
+        return [];
+    }
+}
+
+
+export default async function ClientsPage() {
+    const clients = await getClients();
+
   return (
     <div className="p-4 md:p-8">
       <Card>
@@ -46,10 +63,10 @@ export default function ClientsPage() {
               </TableHeader>
               <TableBody>
                 {clients.map((client) => (
-                  <TableRow key={client.id}>
+                  <TableRow key={client._id}>
                     <TableCell className="font-medium flex items-center gap-3">
                       <Image
-                        src={client.logo}
+                        src={client.logoUrl || 'https://placehold.co/32x32.png'}
                         alt={client.name}
                         width={32}
                         height={32}
@@ -60,7 +77,7 @@ export default function ClientsPage() {
                     </TableCell>
                     <TableCell>
                       <Button asChild variant="outline" size="sm">
-                        <Link href={`/dashboard/clients/${client.id}`}>
+                        <Link href={`/dashboard/clients/${client._id}`}>
                           View Details
                         </Link>
                       </Button>
@@ -72,11 +89,11 @@ export default function ClientsPage() {
           </div>
           <div className="md:hidden space-y-4">
             {clients.map((client) => (
-              <Card key={client.id}>
+              <Card key={client._id}>
                 <CardHeader>
                   <div className="flex items-center gap-3">
                     <Image
-                      src={client.logo}
+                      src={client.logoUrl || 'https://placehold.co/40x40.png'}
                       alt={client.name}
                       width={40}
                       height={40}
@@ -90,7 +107,7 @@ export default function ClientsPage() {
                 </CardHeader>
                 <CardContent>
                   <Button asChild variant="outline" className="w-full">
-                    <Link href={`/dashboard/clients/${client.id}`}>
+                    <Link href={`/dashboard/clients/${client._id}`}>
                       View Details
                     </Link>
                   </Button>

@@ -1,12 +1,6 @@
 
-import type { ChartConfig } from "@/components/ui/chart";
-import type { User } from "@/lib/types";
 
-export const clients: User[] = [
-  { id: "1", name: "Innovate Inc.", logo: "https://placehold.co/32x32.png" },
-  { id: "2", name: "Quantum Leap", logo: "https://placehold.co/32x32.png" },
-  { id: "3", name: "Stellar Solutions", logo: "https://placehold.co/32x32.png" },
-];
+import type { ChartConfig } from "@/components/ui/chart";
 
 export const projects = [
   { id: "p1", name: "Innovate Website", clientId: "1", domain: "innovate.com" },
