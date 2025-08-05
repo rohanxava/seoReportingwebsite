@@ -13,7 +13,7 @@ import { Checkbox } from "../ui/checkbox";
 const CustomLegend = (props: any) => {
   const { payload } = props;
   return (
-    <div className="flex justify-start gap-4 p-4">
+    <div className="flex justify-start items-center gap-4 p-4 flex-wrap">
       {payload.map((entry: any, index: number) => (
         <div key={`item-${index}`} className="flex items-center gap-2">
           <Checkbox id={entry.dataKey} defaultChecked style={{ color: entry.color }} />
@@ -38,7 +38,7 @@ export function TrafficOverview() {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              tickFormatter={(value) => new Date(value).toLocaleDateString('en-US', { month: 'short' })}
             />
             <YAxis
                 tickLine={false}
