@@ -8,4 +8,12 @@ export type User = {
     email: string;
     logoUrl?: string;
     role: 'admin' | 'client';
+    password?: string;
 };
+
+export type Project = {
+    _id: ObjectId;
+    name: string;
+    domain: string;
+    clientId: ObjectId;
+}

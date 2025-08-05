@@ -2,12 +2,6 @@
 
 import type { ChartConfig } from "@/components/ui/chart";
 
-export const projects = [
-  { id: "p1", name: "Innovate Website", clientId: "1", domain: "innovate.com" },
-  { id: "p2", name: "Quantum Blog", clientId: "2", domain: "quantumleap.blog" },
-  { id: "p3", name: "Stellar E-commerce", clientId: "3", domain: "shopstellar.com" },
-];
-
 export const kpiData = {
   sessions: { value: "12,450", change: "+15.2%", changeType: "positive" as const },
   bounceRate: { value: "48.3%", change: "-3.1%", changeType: "positive" as const },
@@ -21,7 +15,7 @@ export const trafficOverviewData = [
   { date: "2024-05-01", organic: 4800, paid: 600 },
   { date: "2024-06-01", organic: 3500, paid: 450 },
   { date: "2024-07-01", organic: 3800, paid: 500 },
-  { date: "2024-08-01", organic: 3633, paid: 400 },
+  { date: "2024-8-01", organic: 3633, paid: 400 },
 ];
 
 export const trafficChartConfig = {

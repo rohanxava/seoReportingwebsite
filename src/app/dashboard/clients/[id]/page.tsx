@@ -9,11 +9,10 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { projects } from "@/lib/data";
 import Link from "next/link";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import type { User } from "@/lib/types";
+import type { User, Project } from "@/lib/types";
 
 async function getClient(id: string): Promise<User | null> {
     try {
@@ -27,14 +26,25 @@ async function getClient(id: string): Promise<User | null> {
     }
 }
 
+async function getClientProjects(clientId: string): Promise<Project[]> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const projects = await db.collection('projects').find({ clientId: new ObjectId(clientId) }).toArray();
+        return JSON.parse(JSON.stringify(projects));
+    } catch (error) {
+        console.error('Failed to fetch client projects:', error);
+        return [];
+    }
+}
+
 export default async function ClientDetailsPage({
   params,
 }: {
   params: { id: string };
 }) {
   const client = await getClient(params.id);
-  // Projects are still static for now
-  const clientProjects = projects.filter((p) => p.clientId === params.id);
+  const clientProjects = await getClientProjects(params.id);
 
   if (!client) {
     return (
@@ -73,7 +83,7 @@ export default async function ClientDetailsPage({
           <h3 className="font-headline text-lg mb-2">Projects</h3>
           <div className="grid gap-4 md:grid-cols-2">
             {clientProjects.map((project) => (
-              <Card key={project.id}>
+              <Card key={project._id.toString()}>
                 <CardHeader>
                   <CardTitle>{project.name}</CardTitle>
                   <CardDescription>{project.domain}</CardDescription>

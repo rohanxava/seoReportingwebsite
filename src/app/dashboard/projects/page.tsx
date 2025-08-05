@@ -1,3 +1,4 @@
+
 import {
   Table,
   TableBody,
@@ -14,12 +15,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { projects } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import clientPromise from "@/lib/mongodb";
-import type { User } from "@/lib/types";
+import type { User, Project } from "@/lib/types";
 
 async function getClients(): Promise<User[]> {
     try {
@@ -33,14 +33,25 @@ async function getClients(): Promise<User[]> {
     }
 }
 
+async function getProjects(): Promise<Project[]> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const projects = await db.collection('projects').find({}).toArray();
+        return JSON.parse(JSON.stringify(projects));
+    } catch (error) {
+        console.error('Failed to fetch projects:', error);
+        return [];
+    }
+}
 
 export default async function ProjectsPage() {
   const clients = await getClients();
+  const projects = await getProjects();
+  
+  const clientMap = new Map(clients.map(c => [c._id.toString(), c.name]));
   const getClientName = (clientId: string) => {
-    // Note: projects are static, so we match by a static `id` field.
-    // In a real app, projects would have a client `_id`.
-    const client = clients.find((c, index) => (index + 1).toString() === clientId);
-    return client?.name || "N/A";
+    return clientMap.get(clientId) || "N/A";
   };
 
   return (
@@ -72,11 +83,11 @@ export default async function ProjectsPage() {
               </TableHeader>
               <TableBody>
                 {projects.map((project) => (
-                  <TableRow key={project.id}>
+                  <TableRow key={project._id}>
                     <TableCell className="font-medium">{project.name}</TableCell>
                     <TableCell>
                       <Badge variant="outline">
-                        {getClientName(project.clientId)}
+                        {getClientName(project.clientId.toString())}
                       </Badge>
                     </TableCell>
                     <TableCell>{project.domain}</TableCell>
@@ -87,14 +98,14 @@ export default async function ProjectsPage() {
           </div>
           <div className="md:hidden space-y-4">
             {projects.map((project) => (
-              <Card key={project.id}>
+              <Card key={project._id}>
                 <CardHeader>
                     <CardTitle className="text-lg">{project.name}</CardTitle>
                     <CardDescription>{project.domain}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Badge variant="outline">
-                        {getClientName(project.clientId)}
+                        {getClientName(project.clientId.toString())}
                   </Badge>
                 </CardContent>
               </Card>

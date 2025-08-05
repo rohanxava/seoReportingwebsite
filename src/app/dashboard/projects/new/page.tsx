@@ -1,9 +1,6 @@
 
 'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, LoaderCircle } from "lucide-react";
@@ -15,15 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -33,78 +21,47 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
+import { addProject } from "@/app/actions/project";
 import type { User } from "@/lib/types";
+import { Label } from "@/components/ui/label";
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Project name must be at least 2 characters.",
-  }),
-  domain: z.string().regex(/^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/, {
-    message: "Please enter a valid domain name.",
-  }),
-  clientId: z.string({
-    required_error: "Please select a client.",
-  }),
-});
+const SubmitButton = () => {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+      Add Project
+    </Button>
+  );
+};
 
-async function getClients(): Promise<User[]> {
-    try {
-        // This is a client component, so we need to fetch from an API route
-        // or use a server action. For simplicity, we'll fetch from an API route
-        // if we were to build one. As a placeholder, we'll return an empty array
-        // and assume a future API endpoint would provide the clients.
-        // In a real app, you would fetch this from '/api/clients' for example.
-        const res = await fetch('/api/clients');
-        if (!res.ok) return [];
-        const clients = await res.json();
-        return clients;
-    } catch (error) {
-        console.error('Failed to fetch clients:', error);
-        return [];
-    }
-}
-
-export default function NewProjectPage() {
+export default function NewProjectPage({
+  searchParams,
+}: {
+  searchParams: { clients: string };
+}) {
   const router = useRouter();
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
-  const [clients, setClients] = useState<User[]>([]);
+  const [state, formAction] = useActionState(addProject, null);
+  const clients: User[] = JSON.parse(searchParams.clients || "[]");
 
   useEffect(() => {
-    // Since this is a client component, we cannot directly query the DB.
-    // A proper implementation would involve creating an API route to fetch clients.
-    // For now, we'll simulate this by setting an empty array, but the form will be disabled.
-    // To make this fully functional, an API endpoint at `/api/clients` would be needed.
-    const fetchClients = async () => {
-      // const fetchedClients = await getClients();
-      // setClients(fetchedClients);
-    };
-    fetchClients();
-  }, []);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      domain: "",
-    },
-  });
-
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
-    console.log(values);
-    // Here you would typically make an API call to save the data.
-    // For this prototype, we'll simulate a delay and show a toast.
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Project Added",
-        description: `${values.name} has been successfully added.`,
-      });
-      router.push("/dashboard/projects");
-    }, 1000);
-  }
+    if (state?.success) {
+        toast({
+            title: "Project Added",
+            description: `The project has been successfully added.`,
+        });
+        router.push("/dashboard/projects");
+    } else if (state?.message) {
+        toast({
+            variant: "destructive",
+            title: "Error",
+            description: state.message,
+        });
+    }
+  }, [state, toast, router]);
 
   return (
     <div className="p-4 md:p-8">
@@ -122,63 +79,36 @@ export default function NewProjectPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Project Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="e.g. Company Website Redesign" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="domain"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Domain Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-               <FormField
-                control={form.control}
-                name="clientId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Assign to Client</FormLabel>
-                     <Select onValueChange={field.onChange} defaultValue={field.value} disabled={clients.length === 0}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a client" />
-                        </SelectTrigger>
-                      </FormControl>
+          <form action={formAction} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <Label htmlFor="name">Project Name</Label>
+                  <Input id="name" name="name" placeholder="e.g. Company Website Redesign" required />
+                  {state?.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="domain">Domain Name</Label>
+                  <Input id="domain" name="domain" placeholder="example.com" required />
+                  {state?.errors?.domain && <p className="text-sm font-medium text-destructive">{state.errors.domain}</p>}
+                </div>
+                <div>
+                    <Label htmlFor="clientId">Assign to Client</Label>
+                     <Select name="clientId" required>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a client" />
+                      </SelectTrigger>
                       <SelectContent>
                         {clients.map(client => (
                             <SelectItem key={client._id.toString()} value={client._id.toString()}>{client.name}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                     {clients.length === 0 && <FormDescription>To assign a project, first add a client.</FormDescription>}
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" disabled={loading}>
-                {loading && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-                Add Project
-              </Button>
+                     {clients.length === 0 && <p className="text-sm text-muted-foreground">To assign a project, first add a client.</p>}
+                     {state?.errors?.clientId && <p className="text-sm font-medium text-destructive">{state.errors.clientId}</p>}
+                </div>
+            </div>
+              <SubmitButton />
             </form>
-          </Form>
         </CardContent>
       </Card>
     </div>

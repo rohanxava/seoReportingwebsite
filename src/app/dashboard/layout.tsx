@@ -1,4 +1,5 @@
 
+
 import Link from "next/link";
 import {
   Activity,
@@ -36,7 +37,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { projects } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DashboardLayoutClient } from "./layout-client";
