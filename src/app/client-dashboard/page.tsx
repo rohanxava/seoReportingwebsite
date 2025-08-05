@@ -24,8 +24,11 @@ import { TopOrganicKeywords } from "@/components/dashboard/top-organic-keywords"
 import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
+import { getDomainAudit } from "@/ai/flows/get-domain-audit";
 
-export default function ClientDashboardPage() {
+export default async function ClientDashboardPage() {
+  const auditData = await getDomainAudit({ domain: "innovate.com" });
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <DashboardHeader />
@@ -54,7 +57,7 @@ export default function ClientDashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold text-primary">30</div>
+                <div className="text-4xl font-bold text-primary">{auditData.authorityScore}</div>
                 <p className="text-xs text-muted-foreground">
                   Semrush Domain Rank 2.7M
                 </p>
@@ -68,12 +71,15 @@ export default function ClientDashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold">3.6K</div>
+                <div className="text-4xl font-bold">
+                  {(auditData.organicSearchTraffic / 1000).toFixed(1)}K
+                </div>
                 <div className="flex items-center text-xs">
                   <span className="text-red-500 mr-1">-0.2%</span>
                 </div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                  Keywords 1K <ArrowUp className="h-3 w-3 text-green-500" />
+                  Keywords {(auditData.organicKeywords / 1000).toFixed(0)}K{" "}
+                  <ArrowUp className="h-3 w-3 text-green-500" />
                 </p>
               </CardContent>
             </Card>
@@ -85,12 +91,13 @@ export default function ClientDashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold">126</div>
+                <div className="text-4xl font-bold">{auditData.paidSearchTraffic}</div>
                 <div className="flex items-center text-xs">
                   <span className="text-red-500">-2.3%</span>
                 </div>
                 <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                  Keywords 8 <ArrowDown className="h-3 w-3 text-red-500" />
+                  Keywords {auditData.paidKeywords}{" "}
+                  <ArrowDown className="h-3 w-3 text-red-500" />
                 </p>
               </CardContent>
             </Card>
@@ -102,9 +109,11 @@ export default function ClientDashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-4xl font-bold">7K</div>
+                <div className="text-4xl font-bold">
+                  {(auditData.backlinks / 1000).toFixed(0)}K
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Referring Domains 731
+                  Referring Domains {auditData.referringDomains}
                 </p>
               </CardContent>
             </Card>
