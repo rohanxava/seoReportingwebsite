@@ -17,4 +17,5 @@ export type Project = {
     name: string;
     domain: string;
     clientId: ObjectId;
+    createdBy?: ObjectId;
 }

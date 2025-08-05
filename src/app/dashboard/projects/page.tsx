@@ -20,12 +20,31 @@ import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import clientPromise from "@/lib/mongodb";
 import type { User, Project } from "@/lib/types";
+import { ObjectId } from "mongodb";
+
+// Helper function to get the current admin user.
+// In a real app, this would come from a session.
+async function getAdmin() {
+    const client = await clientPromise;
+    const db = client.db('seoAudit');
+    const admin = await db.collection('users').findOne({ role: 'admin' });
+    if (!admin) {
+        throw new Error("No admin user found in the database.");
+    }
+    return admin;
+}
 
 async function getClients(): Promise<User[]> {
     try {
+        const admin = await getAdmin();
+        const adminId = admin._id;
+
         const client = await clientPromise;
         const db = client.db('seoAudit');
-        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        const users = await db.collection('users').find({ 
+            role: 'client',
+            createdBy: new ObjectId(adminId) 
+        }).toArray();
         return JSON.parse(JSON.stringify(users));
     } catch (error) {
         console.error('Failed to fetch clients:', error);
@@ -35,9 +54,14 @@ async function getClients(): Promise<User[]> {
 
 async function getProjects(): Promise<Project[]> {
     try {
+        const admin = await getAdmin();
+        const adminId = admin._id;
+
         const client = await clientPromise;
         const db = client.db('seoAudit');
-        const projects = await db.collection('projects').find({}).toArray();
+        const projects = await db.collection('projects').find({
+            createdBy: new ObjectId(adminId)
+        }).toArray();
         return JSON.parse(JSON.stringify(projects));
     } catch (error) {
         console.error('Failed to fetch projects:', error);
@@ -83,7 +107,7 @@ export default async function ProjectsPage() {
               </TableHeader>
               <TableBody>
                 {projects.map((project) => (
-                  <TableRow key={project._id}>
+                  <TableRow key={project._id.toString()}>
                     <TableCell className="font-medium">{project.name}</TableCell>
                     <TableCell>
                       <Badge variant="outline">
@@ -98,7 +122,7 @@ export default async function ProjectsPage() {
           </div>
           <div className="md:hidden space-y-4">
             {projects.map((project) => (
-              <Card key={project._id}>
+              <Card key={project._id.toString()}>
                 <CardHeader>
                     <CardTitle className="text-lg">{project.name}</CardTitle>
                     <CardDescription>{project.domain}</CardDescription>

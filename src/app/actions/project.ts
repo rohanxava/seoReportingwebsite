@@ -12,6 +12,19 @@ const addProjectSchema = z.object({
   clientId: z.string().refine((val) => ObjectId.isValid(val), { message: "Invalid client ID." }),
 });
 
+// Helper function to get the current admin user.
+// In a real app, this would come from a session.
+async function getAdmin() {
+    const client = await clientPromise;
+    const db = client.db('seoAudit');
+    const admin = await db.collection('users').findOne({ role: 'admin' });
+    if (!admin) {
+        throw new Error("No admin user found in the database.");
+    }
+    return admin;
+}
+
+
 export async function addProject(prevState: any, formData: FormData) {
   const values = Object.fromEntries(formData.entries());
   const validatedFields = addProjectSchema.safeParse(values);
@@ -25,6 +38,9 @@ export async function addProject(prevState: any, formData: FormData) {
   const { name, domain, clientId } = validatedFields.data;
 
   try {
+    const admin = await getAdmin();
+    const adminId = admin._id;
+
     const client = await clientPromise;
     const db = client.db('seoAudit');
     const projectsCollection = db.collection('projects');
@@ -33,6 +49,7 @@ export async function addProject(prevState: any, formData: FormData) {
       name,
       domain,
       clientId: new ObjectId(clientId),
+      createdBy: new ObjectId(adminId),
     });
 
     revalidatePath('/dashboard/projects');
