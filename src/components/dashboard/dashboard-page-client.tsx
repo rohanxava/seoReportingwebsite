@@ -139,8 +139,8 @@ export function DashboardPageClient({ initialAuditData }: { initialAuditData: Au
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
-            <div className="space-y-4 md:space-y-8">
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-1">
+            <div className="lg:col-span-1 space-y-4 md:space-y-8">
                  <Card>
                     <CardHeader>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -175,21 +175,20 @@ export function DashboardPageClient({ initialAuditData }: { initialAuditData: Au
                         <TrafficOverview data={auditData.trafficOverviewData} />
                     </CardContent>
                 </Card>
-                <div className="grid auto-rows-min gap-4 md:gap-8 md:grid-cols-2">
-                  <CountryDistribution data={auditData.countryDistributionData} />
-                  <KeywordsByIntent data={auditData.keywordsByIntentData} />
-                </div>
+            </div>
+            
+            <div className="lg:col-span-1 grid auto-rows-min gap-4 md:gap-8 md:grid-cols-2">
+              <CountryDistribution data={auditData.countryDistributionData} />
+              <KeywordsByIntent data={auditData.keywordsByIntentData} />
             </div>
 
-            <div className="space-y-4 md:space-y-8">
-              <div className="grid auto-rows-min gap-4 md:gap-8 md:grid-cols-2">
-                <CompetitorAnalysis />
-                <TopOrganicKeywords data={auditData.topOrganicKeywordsData} />
-              </div>
-              <div className="grid gap-4 md:gap-8 lg:grid-cols-2 mt-4">
-                <MainOrganicCompetitors data={auditData.mainOrganicCompetitorsData} />
-                <CompetitivePositioningMap data={auditData.competitivePositioningData} />
-              </div>
+            <div className="lg:col-span-1 grid auto-rows-min gap-4 md:gap-8 md:grid-cols-2">
+              <CompetitorAnalysis />
+              <TopOrganicKeywords data={auditData.topOrganicKeywordsData} />
+            </div>
+            <div className="lg:col-span-1 grid gap-4 md:gap-8 lg:grid-cols-2 mt-4">
+              <MainOrganicCompetitors data={auditData.mainOrganicCompetitorsData} />
+              <CompetitivePositioningMap data={auditData.competitivePositioningData} />
             </div>
           </div>
         </TabsContent>

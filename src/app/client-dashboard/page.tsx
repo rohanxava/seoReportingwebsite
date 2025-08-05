@@ -21,11 +21,11 @@ import {
 import { TrafficOverview } from "@/components/dashboard/traffic-overview";
 import { CountryDistribution } from "@/components/dashboard/country-distribution";
 import { OrganicKeywordsChart } from "@/components/client-dashboard/organic-keywords-chart";
-import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
 import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
 import { getAuditData } from "@/lib/seo";
+import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
 
 export default async function ClientDashboardPage() {
     const auditData = await getAuditData();
@@ -133,8 +133,8 @@ export default async function ClientDashboardPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
-            <div className="lg:col-span-5 space-y-4 md:space-y-8">
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-1">
+            <div className="lg:col-span-1 space-y-4 md:space-y-8">
               <Card>
                 <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -166,21 +166,21 @@ export default async function ClientDashboardPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <TrafficOverview />
+                  <TrafficOverview data={auditData.trafficOverviewData} />
                 </CardContent>
               </Card>
             </div>
-            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-5 md:grid-cols-2">
-              <CountryDistribution />
-              <KeywordsByIntent />
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-1 md:grid-cols-2">
+              <CountryDistribution data={auditData.countryDistributionData} />
+              <KeywordsByIntent data={auditData.keywordsByIntentData} />
             </div>
-            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-5 md:grid-cols-2">
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-1 md:grid-cols-2">
                 <OrganicKeywordsChart />
-                <TopOrganicKeywords />
+                <TopOrganicKeywords data={auditData.topOrganicKeywordsData} />
             </div>
-            <div className="grid gap-4 md:gap-8 lg:grid-cols-2 mt-4 lg:col-span-5">
-                <MainOrganicCompetitors />
-                <CompetitivePositioningMap />
+            <div className="grid gap-4 md:gap-8 lg:grid-cols-2 mt-4 lg:col-span-1">
+                <MainOrganicCompetitors data={auditData.mainOrganicCompetitorsData} />
+                <CompetitivePositioningMap data={auditData.competitivePositioningData} />
             </div>
           </div>
         </TabsContent>
