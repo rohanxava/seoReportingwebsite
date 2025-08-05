@@ -139,13 +139,13 @@ export default async function ClientDashboardPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-            <div className="grid auto-rows-min gap-4 md:gap-8 md:col-span-2 lg:col-span-1">
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
               <CountryDistribution />
               <KeywordsByIntent />
               <OrganicKeywordsChart />
             </div>
-            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-3">
               <Card>
                 <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
