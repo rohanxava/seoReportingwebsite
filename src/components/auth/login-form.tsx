@@ -65,7 +65,6 @@ export function LoginForm() {
               type="email"
               placeholder="m@example.com"
               required
-              defaultValue="agency@example.com"
             />
           </div>
           <div className="grid gap-2">
@@ -78,7 +77,7 @@ export function LoginForm() {
                 Forgot your password?
               </Link>
             </div>
-            <Input id="password" name="password" type="password" required defaultValue="password" />
+            <Input id="password" name="password" type="password" required />
           </div>
           <SubmitButton />
         </form>
