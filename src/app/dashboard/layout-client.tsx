@@ -23,7 +23,6 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarFooter,
-  SidebarInset,
   SidebarTrigger,
   SidebarGroup,
   SidebarGroupLabel,
@@ -31,15 +30,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { User } from "@/lib/types";
-import { Suspense } from "react";
-import { DashboardHeader } from "./dashboard-header";
 
 export function DashboardLayoutClient({
   children,
   clients,
+  header,
 }: {
   children: React.ReactNode;
   clients: User[];
+  header: React.ReactNode;
 }) {
   const pathname = usePathname();
   return (
@@ -106,7 +105,7 @@ export function DashboardLayoutClient({
             </Button>
         </SidebarFooter>
       </Sidebar>
-      <SidebarInset>
+      <main className="relative flex min-h-svh flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <SidebarTrigger className="sm:hidden" />
             <div className="flex items-center gap-2 sm:hidden">
@@ -116,9 +115,7 @@ export function DashboardLayoutClient({
               </span>
             </div>
              <div className="flex-1">
-              <Suspense>
-                <DashboardHeader />
-              </Suspense>
+                {header}
             </div>
             <div className="ml-auto flex items-center gap-2">
                 <Button asChild variant="outline" size="sm">
@@ -130,8 +127,7 @@ export function DashboardLayoutClient({
             </div>
         </header>
         {children}
-      </SidebarInset>
+      </main>
     </SidebarProvider>
   );
 }
-
