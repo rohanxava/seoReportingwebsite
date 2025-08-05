@@ -26,7 +26,7 @@ export async function signupUser(prevState: any, formData: FormData) {
 
   try {
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db('seoAudit');
     const usersCollection = db.collection('users');
 
     const existingUser = await usersCollection.findOne({ email });
@@ -76,7 +76,7 @@ export async function loginUser(prevState: any, formData: FormData) {
 
     try {
         const client = await clientPromise;
-        const db = client.db();
+        const db = client.db('seoAudit');
         const usersCollection = db.collection("users");
 
         const user = await usersCollection.findOne({ email });
