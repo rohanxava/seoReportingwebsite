@@ -18,8 +18,20 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
-import { getClients } from "@/app/actions/client";
 import type { User } from "@/lib/types";
+import clientPromise from "@/lib/mongodb";
+
+async function getClients(): Promise<User[]> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        return JSON.parse(JSON.stringify(users));
+    } catch (error) {
+        console.error('Failed to fetch clients:', error);
+        return [];
+    }
+}
 
 
 export default async function ClientsPage() {
