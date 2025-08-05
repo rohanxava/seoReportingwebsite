@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,12 @@ export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
+  // In a real app, this would come from a session/auth context
+  const adminUser = {
+      name: "Agency Admin",
+      email: "agency@example.com"
+  };
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -56,11 +63,11 @@ export default function SettingsPage() {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
-            <Input id="name" defaultValue="Agency Admin" readOnly />
+            <Input id="name" defaultValue={adminUser.name} readOnly />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" defaultValue="agency@example.com" readOnly />
+            <Input id="email" type="email" defaultValue={adminUser.email} readOnly />
           </div>
         </CardContent>
       </Card>
