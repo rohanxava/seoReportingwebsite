@@ -23,6 +23,7 @@ import {
   SidebarMenuButton,
   SidebarFooter,
   SidebarTrigger,
+  SidebarInset,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
@@ -95,7 +96,7 @@ export function SidebarWrapper({
           )}
         </SidebarFooter>
       </Sidebar>
-      <main className="relative flex min-h-svh flex-1 flex-col">
+      <SidebarInset>
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
             <SidebarTrigger className="sm:hidden" />
             <div className="flex items-center gap-2 sm:hidden">
@@ -114,7 +115,7 @@ export function SidebarWrapper({
             </div>
         </header>
         {children}
-      </main>
+      </SidebarInset>
     </SidebarProvider>
   );
 }
