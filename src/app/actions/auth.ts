@@ -184,3 +184,43 @@ export async function verifyOtp(prevState: any, formData: FormData) {
 
     redirect(redirectUrl);
 }
+
+// --- Resend OTP Action ---
+
+const resendOtpSchema = z.object({
+  email: z.string().email(),
+});
+
+export async function resendOtp(prevState: any, formData: FormData) {
+  const values = Object.fromEntries(formData.entries());
+  const validatedFields = resendOtpSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return {
+      message: "Invalid email.",
+    };
+  }
+
+  const { email } = validatedFields.data;
+
+  try {
+    const client = await clientPromise;
+    const db = client.db('seoAudit');
+    const usersCollection = db.collection('users');
+
+    const user = await usersCollection.findOne({ email });
+
+    if (!user) {
+      return { message: "User not found." };
+    }
+
+    const otp = await generateAndSaveOtp(email);
+    await sendOtpEmail(email, otp);
+
+    return { success: true, message: "A new OTP has been sent to your email." };
+
+  } catch (error) {
+    console.error(error);
+    return { message: "An unexpected error occurred. Please try again." };
+  }
+}
