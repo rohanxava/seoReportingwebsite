@@ -17,7 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { PlusCircle } from "lucide-react";
+import { FileText, PlusCircle } from "lucide-react";
 import clientPromise from "@/lib/mongodb";
 import type { User, Project } from "@/lib/types";
 import { ObjectId } from "mongodb";
@@ -103,6 +103,7 @@ export default async function ProjectsPage() {
                   <TableHead>Project Name</TableHead>
                   <TableHead>Client</TableHead>
                   <TableHead>Domain</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -115,6 +116,14 @@ export default async function ProjectsPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>{project.domain}</TableCell>
+                    <TableCell>
+                      <Button asChild variant="outline" size="sm">
+                        <Link href={`/dashboard/reports/${project._id.toString()}`}>
+                          <FileText className="mr-2 h-4 w-4" />
+                          Generate Report
+                        </Link>
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -127,10 +136,16 @@ export default async function ProjectsPage() {
                     <CardTitle className="text-lg">{project.name}</CardTitle>
                     <CardDescription>{project.domain}</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <Badge variant="outline">
+                <CardContent className="flex flex-col gap-4">
+                  <Badge variant="outline" className="w-fit">
                         {getClientName(project.clientId.toString())}
                   </Badge>
+                   <Button asChild variant="outline" size="sm">
+                        <Link href={`/dashboard/reports/${project._id.toString()}`}>
+                          <FileText className="mr-2 h-4 w-4" />
+                          Generate Report
+                        </Link>
+                      </Button>
                 </CardContent>
               </Card>
             ))}
