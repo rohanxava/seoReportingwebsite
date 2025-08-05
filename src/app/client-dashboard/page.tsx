@@ -24,7 +24,7 @@ import { OrganicKeywordsChart } from "@/components/client-dashboard/organic-keyw
 
 export default function ClientDashboardPage() {
   return (
-    <>
+    <div className="p-4 md:p-8">
       <DashboardHeader />
       <Tabs defaultValue="overview">
         <div className="flex items-center justify-between">
@@ -42,7 +42,7 @@ export default function ClientDashboardPage() {
           </TabsList>
         </div>
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center justify-between">
@@ -166,6 +166,6 @@ export default function ClientDashboardPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </>
+    </div>
   );
 }

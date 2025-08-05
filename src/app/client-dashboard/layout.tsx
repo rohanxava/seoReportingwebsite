@@ -26,7 +26,7 @@ export default function ClientDashboardLayout({
             </Link>
          </Button>
       </header>
-      <main className="flex flex-1 flex-col gap-4 py-4 md:gap-8 md:p-8">{children}</main>
+      <main className="flex flex-1 flex-col">{children}</main>
     </>
   );
 }
