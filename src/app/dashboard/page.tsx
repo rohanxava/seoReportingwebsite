@@ -42,7 +42,7 @@ export default function DashboardPage() {
           </TabsList>
         </div>
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center justify-between">
@@ -106,7 +106,7 @@ export default function DashboardPage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="sm:col-span-2 lg:col-span-1">
+            <Card className="col-span-2 sm:col-span-1">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center justify-between">
                   Traffic Share
