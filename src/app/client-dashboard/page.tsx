@@ -143,7 +143,6 @@ export default async function ClientDashboardPage() {
             <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
               <CountryDistribution />
               <KeywordsByIntent />
-              <OrganicKeywordsChart />
             </div>
             <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-3">
               <Card>
@@ -180,10 +179,13 @@ export default async function ClientDashboardPage() {
                   <TrafficOverview />
                 </CardContent>
               </Card>
-              <TopOrganicKeywords />
             </div>
           </div>
-          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
+           <div className="grid gap-4 md:gap-8 md:grid-cols-2">
+              <OrganicKeywordsChart />
+              <TopOrganicKeywords />
+            </div>
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-5 mt-4">
             <div className="lg:col-span-2">
               <MainOrganicCompetitors />
             </div>

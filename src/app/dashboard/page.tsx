@@ -24,7 +24,7 @@ import { CompetitorAnalysis } from "@/components/dashboard/competitor-analysis";
 import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
-import { TopOrganicKeywords } from "@/components/dashboard/top-organic-keywords";
+import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
 
 export default async function DashboardPage() {
   const auditData = {
@@ -140,13 +140,12 @@ export default async function DashboardPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
-             <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-2">
+             <div className="grid auto-rows-min gap-4 md:gap-8">
                 <CountryDistribution />
                 <KeywordsByIntent />
-                <CompetitorAnalysis />
             </div>
-            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-3">
+            <div className="grid auto-rows-min gap-4 md:gap-8">
               <Card>
                  <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -181,8 +180,11 @@ export default async function DashboardPage() {
                     <TrafficOverview />
                  </CardContent>
               </Card>
-              <TopOrganicKeywords />
             </div>
+          </div>
+           <div className="grid gap-4 md:gap-8 md:grid-cols-2">
+              <CompetitorAnalysis />
+              <TopOrganicKeywords />
           </div>
            <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
               <div className="lg:col-span-2">
