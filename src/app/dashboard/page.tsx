@@ -23,6 +23,8 @@ import { CountryDistribution } from "@/components/dashboard/country-distribution
 import { CompetitorAnalysis } from "@/components/dashboard/competitor-analysis";
 import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-competitors";
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
+import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
+import { TopOrganicKeywords } from "@/components/dashboard/top-organic-keywords";
 
 export default function DashboardPage() {
   return (
@@ -126,6 +128,7 @@ export default function DashboardPage() {
           <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
              <div className="lg:col-span-2 grid auto-rows-min gap-4 md:gap-8">
                 <CountryDistribution />
+                <KeywordsByIntent />
                 <CompetitorAnalysis />
             </div>
             <div className="lg:col-span-3">
@@ -163,6 +166,7 @@ export default function DashboardPage() {
                     <TrafficOverview />
                  </CardContent>
               </Card>
+              <TopOrganicKeywords />
             </div>
           </div>
            <div className="grid gap-4 md:gap-8 lg:grid-cols-5">

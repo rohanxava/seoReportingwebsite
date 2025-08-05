@@ -119,19 +119,27 @@ export const mainOrganicCompetitorsData = [
 ];
 
 export const competitivePositioningData = [
-    { name: 'cajeestimezone...', organicKeywords: 45, organicSearchTraffic: 50, z: 2.4 },
-    { name: 'timeshop24.co....', organicKeywords: 60, organicSearchTraffic: 40, z: 2.4 },
-    { name: 'customworksa...', organicKeywords: 145, organicSearchTraffic: 30, z: 2.4 },
-    { name: 'style-old-mone...', organicKeywords: 70, organicSearchTraffic: 20, z: 2.4 },
+    { name: 'cajeestimezone.c...', organicKeywords: 45, organicSearchTraffic: 50, z: 2.4 },
+    { name: 'timeshop24.co.uk', organicKeywords: 60, organicSearchTraffic: 40, z: 2.4 },
+    { name: 'customworksaus...', organicKeywords: 145, organicSearchTraffic: 30, z: 2.4 },
+    { name: 'style-old-money...', organicKeywords: 70, organicSearchTraffic: 20, z: 2.4 },
     { name: 'laphont.com', organicKeywords: 50, organicSearchTraffic: 350, z: 2.4 },
-    { name: 'egardwatches....', organicKeywords: 20, organicSearchTraffic: 10, z: 2.4 },
+    { name: 'egardwatches.com', organicKeywords: 20, organicSearchTraffic: 10, z: 2.4 },
 ];
 
 export const competitivePositioningChartConfig = {
-    cajeestimezone: { label: "cajeestimezone...", color: "hsl(var(--chart-1))" },
-    timeshop24: { label: "timeshop24.co....", color: "hsl(var(--chart-2))" },
-    customworksa: { label: "customworksa...", color: "hsl(var(--chart-3))" },
-    styleoldmone: { label: "style-old-mone...", color: "hsl(var(--chart-4))" },
+    cajeestimezone: { label: "cajeestimezone.c...", color: "hsl(var(--chart-1))" },
+    timeshop24: { label: "timeshop24.co.uk", color: "hsl(var(--chart-2))" },
+    customworksa: { label: "customworksaus...", color: "hsl(var(--chart-3))" },
+    styleoldmone: { label: "style-old-money...", color: "hsl(var(--chart-4))" },
     laphont: { label: "laphont.com", color: "hsl(var(--chart-5))" },
-    egardwatches: { label: "egardwatches....", color: "hsl(var(--secondary))" },
+    egardwatches: { label: "egardwatches.com", color: "hsl(var(--secondary))" },
 } satisfies ChartConfig;
+
+
+export const keywordsByIntentData = [
+  { intent: 'Informational', percentage: 27.8, keywords: 5, traffic: 0, color: 'bg-blue-500' },
+  { intent: 'Navigational', percentage: 5.6, keywords: 1, traffic: 0, color: 'bg-purple-500' },
+  { intent: 'Commercial', percentage: 50, keywords: 9, traffic: 1, color: 'bg-yellow-400' },
+  { intent: 'Transactional', percentage: 16.7, keywords: 3, traffic: 0, color: 'bg-teal-500' },
+];
