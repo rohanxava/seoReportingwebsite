@@ -1,4 +1,3 @@
-
 import {
   Table,
   TableBody,
@@ -18,56 +17,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FileText, PlusCircle } from "lucide-react";
-import clientPromise from "@/lib/mongodb";
 import type { User, Project } from "@/lib/types";
 import { ObjectId } from "mongodb";
-
-// Helper function to get the current admin user.
-// In a real app, this would come from a session.
-async function getAdmin() {
-    const client = await clientPromise;
-    const db = client.db('seoAudit');
-    const admin = await db.collection('users').findOne({ role: 'admin' });
-    if (!admin) {
-        throw new Error("No admin user found in the database.");
-    }
-    return admin;
-}
-
-async function getClients(): Promise<User[]> {
-    try {
-        const admin = await getAdmin();
-        const adminId = admin._id;
-
-        const client = await clientPromise;
-        const db = client.db('seoAudit');
-        const users = await db.collection('users').find({ 
-            role: 'client',
-            createdBy: new ObjectId(adminId) 
-        }).toArray();
-        return JSON.parse(JSON.stringify(users));
-    } catch (error) {
-        console.error('Failed to fetch clients:', error);
-        return [];
-    }
-}
-
-async function getProjects(): Promise<Project[]> {
-    try {
-        const admin = await getAdmin();
-        const adminId = admin._id;
-
-        const client = await clientPromise;
-        const db = client.db('seoAudit');
-        const projects = await db.collection('projects').find({
-            createdBy: new ObjectId(adminId)
-        }).toArray();
-        return JSON.parse(JSON.stringify(projects));
-    } catch (error) {
-        console.error('Failed to fetch projects:', error);
-        return [];
-    }
-}
+import { getClients } from "@/app/actions/client";
+import { getProjects } from "@/app/actions/project";
 
 export default async function ProjectsPage() {
   const clients = await getClients();

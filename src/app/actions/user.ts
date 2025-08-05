@@ -5,6 +5,7 @@ import { z } from 'zod';
 import clientPromise from '@/lib/mongodb';
 import { revalidatePath } from 'next/cache';
 import { ObjectId } from 'mongodb';
+import type { User } from '@/lib/types';
 
 const updateLogoSchema = z.object({
   logoUrl: z.string().url('Please enter a valid URL.'),
@@ -92,4 +93,19 @@ export async function updateAdminDetails(prevState: any, formData: FormData) {
       message: 'An unexpected error occurred. Please try again.',
     };
   }
+}
+
+// In a real app, you'd get this from the user's session
+export async function getAdminUser(): Promise<User | null> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        // Find the first admin user for this prototype
+        const user = await db.collection('users').findOne({ role: 'admin' });
+        if (!user) return null;
+        return JSON.parse(JSON.stringify(user));
+    } catch (error) {
+        console.error('Failed to fetch admin user:', error);
+        return null;
+    }
 }

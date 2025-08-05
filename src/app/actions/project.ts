@@ -5,6 +5,7 @@ import { z } from 'zod';
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { revalidatePath } from 'next/cache';
+import type { Project } from '@/lib/types';
 
 const addProjectSchema = z.object({
   name: z.string().min(2, 'Project name must be at least 2 characters.'),
@@ -61,4 +62,21 @@ export async function addProject(prevState: any, formData: FormData) {
       message: 'An unexpected error occurred. Please try again.',
     };
   }
+}
+
+export async function getProjects(): Promise<Project[]> {
+    try {
+        const admin = await getAdmin();
+        const adminId = admin._id;
+
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const projects = await db.collection('projects').find({
+            createdBy: new ObjectId(adminId)
+        }).toArray();
+        return JSON.parse(JSON.stringify(projects));
+    } catch (error) {
+        console.error('Failed to fetch projects:', error);
+        return [];
+    }
 }
