@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Activity } from "lucide-react";
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,16 +19,18 @@ import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
   const router = useRouter();
+  const [email, setEmail] = React.useState("rohangoyal8807@gmail.com");
 
-  const handleAgencyLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/otp?redirect=/dashboard");
+
+    let redirectUrl = "/dashboard"; // Default to admin dashboard
+    if (email === "jerrygoel499@gmail.com") {
+      redirectUrl = "/client-dashboard";
+    }
+
+    router.push(`/otp?redirect=${redirectUrl}`);
   };
-
-  const handleClientLogin = (e: React.MouseEvent) => {
-    e.preventDefault();
-    router.push("/otp?redirect=/client-dashboard");
-  }
 
   return (
     <Card className="w-full max-w-sm">
@@ -41,7 +44,7 @@ export function LoginForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleAgencyLogin} className="grid gap-4">
+        <form onSubmit={handleLogin} className="grid gap-4">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -49,7 +52,8 @@ export function LoginForm() {
               type="email"
               placeholder="m@example.com"
               required
-              defaultValue="agency@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid gap-2">
@@ -66,9 +70,6 @@ export function LoginForm() {
           </div>
           <Button type="submit" className="w-full">
             Sign In
-          </Button>
-          <Button variant="outline" className="w-full" onClick={handleClientLogin}>
-            Sign in as Client
           </Button>
         </form>
         <div className="mt-4 text-center text-sm">
