@@ -1,3 +1,4 @@
+
 import type { ChartConfig } from "@/components/ui/chart";
 
 export const clients = [
@@ -20,22 +21,21 @@ export const kpiData = {
 };
 
 export const trafficOverviewData = [
-  { date: "2024-05-01", organic: 1200, paid: 800 },
-  { date: "2024-05-02", organic: 1300, paid: 850 },
-  { date: "2024-05-03", organic: 1250, paid: 900 },
-  { date: "2024-05-04", organic: 1400, paid: 950 },
-  { date: "2024-05-05", organic: 1550, paid: 1000 },
-  { date: "2024-05-06", organic: 1600, paid: 1100 },
-  { date: "2024-05-07", organic: 1750, paid: 1150 },
+  { date: "2024-03-01", organic: 5200, paid: 500 },
+  { date: "2024-04-01", organic: 5100, paid: 550 },
+  { date: "2024-05-01", organic: 4800, paid: 600 },
+  { date: "2024-06-01", organic: 3500, paid: 450 },
+  { date: "2024-07-01", organic: 3800, paid: 500 },
+  { date: "2024-08-01", organic: 3633, paid: 400 },
 ];
 
 export const trafficChartConfig = {
   organic: {
-    label: "Organic",
+    label: "Organic Traffic",
     color: "hsl(var(--chart-1))",
   },
   paid: {
-    label: "Paid",
+    label: "Paid Traffic",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
@@ -74,4 +74,12 @@ export const competitorData = [
     { name: "Competitor B", avgRanking: 10, domain: "competitor-b.com" },
     { name: "Competitor C", avgRanking: 12, domain: "competitor-c.com" },
     { name: "Competitor D", avgRanking: 18, domain: "competitor-d.com" },
-]
+];
+
+export const countryDistributionData = [
+    { country: "Worldwide", share: 100, traffic: "3.6K", keywords: "1K" },
+    { country: "🇺🇸 US", share: 58, traffic: "2.1K", keywords: "689" },
+    { country: "🇮🇳 IN", share: 12, traffic: "429", keywords: "23" },
+    { country: "🇦🇺 AU", share: 1, traffic: "1", keywords: "16" },
+    { country: "Other", share: 30, traffic: "1.1K", keywords: "318" },
+];
