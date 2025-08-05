@@ -20,6 +20,17 @@ import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-ke
 import { MainOrganicCompetitors } from "../main-organic-competitors";
 import { CompetitivePositioningMap } from "../competitive-positioning-map";
 import { LoaderCircle, Mail, Printer } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function ReportView({ reportData }: { reportData: ReportData }) {
   const { project, client, auditData, generatedAt } = reportData;
@@ -57,14 +68,33 @@ export function ReportView({ reportData }: { reportData: ReportData }) {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Button onClick={handleSendReport} disabled={isSending}>
-              {isSending ? (
-                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Mail className="mr-2 h-4 w-4" />
-              )}
-              Send Report
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button disabled={isSending}>
+                  {isSending ? (
+                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <Mail className="mr-2 h-4 w-4" />
+                  )}
+                  Send Report
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Report Email</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will send an email with the report summary to <strong>{client.email}</strong>.
+                    Are you sure you want to continue?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleSendReport}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
             <Button onClick={() => window.print()} variant="outline">
               <Printer className="mr-2 h-4 w-4" />
               Print / Download
