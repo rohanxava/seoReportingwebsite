@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import clientPromise from '@/lib/mongodb';
 import { revalidatePath } from 'next/cache';
 import type { User } from '@/lib/types';
+import { ObjectId } from 'mongodb';
 
 const addClientSchema = z.object({
   name: z.string().min(2, 'Client name must be at least 2 characters.'),
@@ -25,6 +26,10 @@ export async function addClientUser(prevState: any, formData: FormData) {
   }
   
   const { name, logoUrl, email, password } = validatedFields.data;
+
+  // In a real app, you would get the current admin's ID from the session.
+  // For this prototype, we'll use a hardcoded admin ID.
+  const adminId = "66a013a483896b1b36991392";
 
   try {
     const client = await clientPromise;
@@ -47,6 +52,7 @@ export async function addClientUser(prevState: any, formData: FormData) {
       password: hashedPassword,
       logoUrl: logoUrl || 'https://placehold.co/32x32.png', 
       role: 'client',
+      createdBy: new ObjectId(adminId), // Associate client with the admin
     });
     
     revalidatePath('/dashboard/clients');
@@ -65,10 +71,17 @@ export async function addClientUser(prevState: any, formData: FormData) {
 }
 
 export async function getClients(): Promise<User[]> {
+    // In a real app, you would get the current admin's ID from the session.
+    // For this prototype, we'll use a hardcoded admin ID to filter clients.
+    const adminId = "66a013a483896b1b36991392";
+
     try {
         const client = await clientPromise;
         const db = client.db('seoAudit');
-        const users = await db.collection('users').find({ role: 'client' }).toArray();
+        const users = await db.collection('users').find({ 
+            role: 'client',
+            createdBy: new ObjectId(adminId) 
+        }).toArray();
         return JSON.parse(JSON.stringify(users));
     } catch (error) {
         console.error('Failed to fetch clients:', error);

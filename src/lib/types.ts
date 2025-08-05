@@ -9,6 +9,7 @@ export type User = {
     logoUrl?: string;
     role: 'admin' | 'client';
     password?: string;
+    createdBy?: ObjectId;
 };
 
 export type Project = {
