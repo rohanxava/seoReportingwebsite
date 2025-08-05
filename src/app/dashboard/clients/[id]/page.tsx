@@ -91,7 +91,7 @@ export default async function ClientDetailsPage({
                 </CardHeader>
                 <CardContent>
                     <Button asChild>
-                        <Link href="/client-dashboard">View Dashboard</Link>
+                        <Link href={`/dashboard/reports/${project._id.toString()}`}>View Report</Link>
                     </Button>
                 </CardContent>
               </Card>

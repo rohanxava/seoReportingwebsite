@@ -1,4 +1,3 @@
-'use server';
 
 import {
   Table,
@@ -75,8 +74,8 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
   
   const clientMap = new Map(clients.map(c => [c._id.toString(), c.name]));
-  const getClientName = (clientId: string) => {
-    return clientMap.get(clientId) || "N/A";
+  const getClientName = (clientId: ObjectId | string) => {
+    return clientMap.get(clientId.toString()) || "N/A";
   };
 
   return (
@@ -125,7 +124,7 @@ export default async function ProjectsPage() {
                         <TableCell className="font-medium">{project.name}</TableCell>
                         <TableCell>
                           <Badge variant="outline">
-                            {getClientName(project.clientId.toString())}
+                            {getClientName(project.clientId)}
                           </Badge>
                         </TableCell>
                         <TableCell>{project.domain}</TableCell>
@@ -151,7 +150,7 @@ export default async function ProjectsPage() {
                     </CardHeader>
                     <CardContent className="flex flex-col gap-4">
                       <Badge variant="outline" className="w-fit">
-                            {getClientName(project.clientId.toString())}
+                            {getClientName(project.clientId)}
                       </Badge>
                       <Button asChild variant="outline" size="sm">
                             <Link href={`/dashboard/reports/${project._id.toString()}`}>

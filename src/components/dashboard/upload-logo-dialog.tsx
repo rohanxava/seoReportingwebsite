@@ -29,13 +29,15 @@ const SubmitButton = () => {
   );
 };
 
-export function UploadLogoDialog({
-  updateAdminLogo,
-  adminId,
-}: {
-  updateAdminLogo: (prevState: any, formData: FormData) => Promise<any>;
+interface UploadLogoDialogProps {
   adminId: string;
-}) {
+  updateAdminLogo: (prevState: any, formData: FormData) => Promise<any>;
+}
+
+export function UploadLogoDialog({
+  adminId,
+  updateAdminLogo,
+}: UploadLogoDialogProps) {
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
   const [state, formAction] = useActionState(updateAdminLogo, null);

@@ -1,4 +1,3 @@
-'use server';
 
 import { getProjectForReport } from "@/app/actions/report";
 import { ReportView } from "@/components/dashboard/report/report-view";

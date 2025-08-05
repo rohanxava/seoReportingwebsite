@@ -21,6 +21,7 @@ export type Project = {
     name: string;
     domain: string;
     clientId: ObjectId;
+    createdBy: ObjectId;
 };
 
 export type TrafficOverviewDataPoint = { date: string; organic: number; paid: number };

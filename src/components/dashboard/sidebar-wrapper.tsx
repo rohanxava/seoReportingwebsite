@@ -29,8 +29,8 @@ import {
 import { Button } from "@/components/ui/button";
 import type { User } from "@/lib/types";
 import { UploadLogoDialog } from "./upload-logo-dialog";
-import { updateAdminLogo } from "@/app/actions/user";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { updateAdminLogo } from "@/app/actions/user";
 
 export function SidebarWrapper({
   children,
@@ -91,7 +91,7 @@ export function SidebarWrapper({
                 </Avatar>
                 <div className="flex flex-col">
                     <span className="text-sm font-medium">{adminUser.name}</span>
-                     <UploadLogoDialog updateAdminLogo={updateAdminLogo} adminId={adminUser._id.toString()} />
+                     <UploadLogoDialog adminId={adminUser._id.toString()} updateAdminLogo={updateAdminLogo} />
                 </div>
             </div>
           )}

@@ -1,4 +1,3 @@
-'use server';
 
 import Image from "next/image";
 import Link from "next/link";
@@ -20,19 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import type { User } from "@/lib/types";
-import clientPromise from "@/lib/mongodb";
-
-async function getClients(): Promise<User[]> {
-    try {
-        const client = await clientPromise;
-        const db = client.db('seoAudit');
-        const users = await db.collection('users').find({ role: 'client' }).toArray();
-        return JSON.parse(JSON.stringify(users));
-    } catch (error) {
-        console.error('Failed to fetch clients:', error);
-        return [];
-    }
-}
+import { getClients } from "@/app/actions/client";
 
 
 export default async function ClientsPage() {
