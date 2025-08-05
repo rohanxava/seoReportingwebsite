@@ -1,4 +1,5 @@
 
+
 import { DashboardHeader } from "@/components/client-dashboard/dashboard-header";
 import {
   Card,
@@ -139,8 +140,9 @@ export default async function ClientDashboardPage() {
               </CardContent>
             </Card>
           </div>
-          <div className="grid gap-4 md:gap-8">
-            <Card className="lg:col-span-3">
+          <div className="grid gap-4 md:gap-8 lg:grid-cols-5">
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-3">
+              <Card>
                 <CardHeader>
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <Tabs defaultValue="organic" className="w-full">
@@ -174,19 +176,18 @@ export default async function ClientDashboardPage() {
                   <TrafficOverview />
                 </CardContent>
               </Card>
-              <div className="grid auto-rows-min gap-4 md:gap-8 lg:grid-cols-5">
-                <div className="lg:col-span-3">
-                    <CountryDistribution />
-                </div>
-                <div className="lg:col-span-2">
-                    <KeywordsByIntent />
-                </div>
+              <div className="grid auto-rows-min gap-4 md:gap-8 md:grid-cols-2">
+                <CountryDistribution />
+                <KeywordsByIntent />
               </div>
-          </div>
-           <div className="grid gap-4 md:gap-8 md:grid-cols-2">
-              <OrganicKeywordsChart />
-              <TopOrganicKeywords />
             </div>
+            <div className="grid auto-rows-min gap-4 md:gap-8 lg:col-span-2">
+                <div className="grid gap-4 md:gap-8 md:grid-cols-2 lg:grid-cols-1">
+                    <OrganicKeywordsChart />
+                    <TopOrganicKeywords />
+                </div>
+            </div>
+          </div>
           <div className="grid gap-4 md:gap-8 lg:grid-cols-5 mt-4">
             <div className="lg:col-span-2">
               <MainOrganicCompetitors />
