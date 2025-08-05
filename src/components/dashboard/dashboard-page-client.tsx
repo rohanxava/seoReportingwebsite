@@ -1,7 +1,8 @@
 
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -14,8 +15,10 @@ import {
   ArrowDown,
   ArrowUp,
   Circle,
+  Download,
   Globe,
   Link as LinkIcon,
+  LoaderCircle,
   PieChart,
   Upload,
 } from "lucide-react";
@@ -26,20 +29,99 @@ import { MainOrganicCompetitors } from "@/components/dashboard/main-organic-comp
 import { CompetitivePositioningMap } from "@/components/dashboard/competitive-positioning-map";
 import { KeywordsByIntent } from "@/components/dashboard/keywords-by-intent";
 import { TopOrganicKeywords } from "@/components/client-dashboard/top-organic-keywords";
-import type { AuditData } from "@/lib/types";
+import type { AuditData, ManualReport } from "@/lib/types";
 import { ManualDataForm } from "@/components/dashboard/manual-data-form";
+import { getAuditData } from "@/lib/seo";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { getManualReportById } from "@/app/actions/report";
+import Link from "next/link";
+
+export function DashboardPageClient({ selectedProjectId, initialManualReports }: { selectedProjectId: string | null, initialManualReports: ManualReport[] }) {
+  const [auditData, setAuditData] = useState<AuditData | null>(null);
+  const [manualReports, setManualReports] = useState<ManualReport[]>(initialManualReports);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isReportLoading, setIsReportLoading] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const selectedReportId = searchParams.get('report');
 
 
-export function DashboardPageClient({ initialAuditData }: { initialAuditData: AuditData }) {
-  const [auditData, setAuditData] = useState<AuditData>(initialAuditData);
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      let data;
+      if (selectedReportId) {
+        data = await getManualReportById(selectedReportId);
+      } else {
+        data = await getAuditData();
+      }
+      setAuditData(data);
+      setIsLoading(false);
+    };
+
+    loadData();
+  }, [selectedReportId]);
+
+  useEffect(() => {
+    setManualReports(initialManualReports);
+  }, [initialManualReports]);
+
 
   const handleDataUpdate = (newData: Partial<AuditData>) => {
-    setAuditData(prevData => ({...prevData, ...newData}));
+    setAuditData(prevData => prevData ? {...prevData, ...newData} : null);
+  }
+
+  const handleReportSelect = (reportId: string) => {
+    if (!reportId) return;
+    setIsReportLoading(true);
+    const params = new URLSearchParams(searchParams);
+    params.set('report', reportId);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }
+
+  if (isLoading || !auditData) {
+    return (
+        <div className="flex items-center justify-center h-64">
+            <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+        </div>
+    );
   }
 
   return (
     <>
-      <ManualDataForm onDataUpdate={handleDataUpdate} />
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <ManualDataForm 
+            projectId={selectedProjectId}
+            onDataUpdate={handleDataUpdate}
+            onReportSave={(newReport) => setManualReports(prev => [newReport, ...prev])}
+        />
+        <div className="flex gap-2 w-full md:w-auto">
+            <Select onValueChange={handleReportSelect} defaultValue={selectedReportId || ""}>
+                <SelectTrigger className="w-full md:w-[200px]" disabled={isReportLoading}>
+                    <SelectValue placeholder="Load a saved report" />
+                </SelectTrigger>
+                <SelectContent>
+                    {manualReports.length > 0 ? (
+                        manualReports.map(report => (
+                            <SelectItem key={report._id.toString()} value={report._id.toString()}>
+                                {report.reportName} - {new Date(report.createdAt).toLocaleDateString()}
+                            </SelectItem>
+                        ))
+                    ) : (
+                        <SelectItem value="no-reports" disabled>No saved reports</SelectItem>
+                    )}
+                </SelectContent>
+            </Select>
+            <Button asChild variant="outline">
+                <Link href={`/dashboard/reports/${selectedProjectId}?report=${selectedReportId || ''}`}>
+                    <Download className="mr-2 h-4 w-4" />
+                    Report
+                </Link>
+            </Button>
+        </div>
+      </div>
 
       <Tabs defaultValue="overview">
         <div className="flex items-center justify-between">

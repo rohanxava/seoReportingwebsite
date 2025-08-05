@@ -1,5 +1,4 @@
 
-
 import { ObjectId } from "mongodb";
 
 export type User = {
@@ -47,3 +46,11 @@ export type AuditData = {
     mainOrganicCompetitorsData: MainOrganicCompetitorsDataPoint[];
     competitivePositioningData: CompetitivePositioningDataPoint[];
 };
+
+export type ManualReport = {
+    _id: ObjectId;
+    reportName: string;
+    projectId: ObjectId;
+    createdAt: Date;
+    auditData: AuditData;
+}

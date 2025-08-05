@@ -5,7 +5,7 @@ import { z } from 'zod';
 import clientPromise from '@/lib/mongodb';
 import { ObjectId } from 'mongodb';
 import { revalidatePath } from 'next/cache';
-import type { Project } from '@/lib/types';
+import type { Project, User } from '@/lib/types';
 
 const addProjectSchema = z.object({
   name: z.string().min(2, 'Project name must be at least 2 characters.'),
@@ -13,16 +13,17 @@ const addProjectSchema = z.object({
   clientId: z.string().refine((val) => ObjectId.isValid(val), { message: "Invalid client ID." }),
 });
 
-// Helper function to get the current admin user.
-// In a real app, this would come from a session.
-async function getAdmin() {
-    const client = await clientPromise;
-    const db = client.db('seoAudit');
-    const admin = await db.collection('users').findOne({ role: 'admin' });
-    if (!admin) {
-        throw new Error("No admin user found in the database.");
+async function getAdmin(): Promise<User | null> {
+    try {
+        const client = await clientPromise;
+        const db = client.db('seoAudit');
+        const user = await db.collection<User>('users').findOne({ role: 'admin' });
+        if (!user) return null;
+        return JSON.parse(JSON.stringify(user));
+    } catch (error) {
+        console.error('Failed to fetch admin user:', error);
+        return null;
     }
-    return admin;
 }
 
 
@@ -40,6 +41,9 @@ export async function addProject(prevState: any, formData: FormData) {
 
   try {
     const admin = await getAdmin();
+    if (!admin) {
+        throw new Error("No admin user found.")
+    }
     const adminId = admin._id;
 
     const client = await clientPromise;
@@ -67,6 +71,9 @@ export async function addProject(prevState: any, formData: FormData) {
 export async function getProjects(): Promise<Project[]> {
     try {
         const admin = await getAdmin();
+         if (!admin) {
+            return [];
+        }
         const adminId = admin._id;
 
         const client = await clientPromise;

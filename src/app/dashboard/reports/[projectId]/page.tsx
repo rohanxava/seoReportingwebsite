@@ -1,4 +1,6 @@
 
+'use server';
+
 import { getProjectForReport } from "@/app/actions/report";
 import { ReportView } from "@/components/dashboard/report/report-view";
 import {
@@ -15,10 +17,13 @@ import { ArrowLeft } from "lucide-react";
 
 export default async function ReportPage({
   params,
+  searchParams
 }: {
   params: { projectId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const reportData = await getProjectForReport(params.projectId);
+  const reportId = searchParams?.report as string | undefined;
+  const reportData = await getProjectForReport(params.projectId, reportId);
 
   if (!reportData) {
     return (

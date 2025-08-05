@@ -13,12 +13,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import type { AuditData } from '@/lib/types';
-import { ChevronsUpDown, PlusCircle, Trash2 } from 'lucide-react';
+import type { AuditData, ManualReport } from '@/lib/types';
+import { ChevronsUpDown, PlusCircle, Trash2, LoaderCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useActionState, useEffect } from 'react';
+import { saveManualReport } from '@/app/actions/report';
+import { useFormStatus } from 'react-dom';
 
 const formSchema = z.object({
+  reportName: z.string().min(3, "Report name is required."),
   authorityScore: z.coerce.number().min(0).max(100),
   organicSearchTraffic: z.coerce.number().min(0),
   paidSearchTraffic: z.coerce.number().min(0),
@@ -27,12 +30,12 @@ const formSchema = z.object({
   organicKeywords: z.coerce.number().min(0),
   paidKeywords: z.coerce.number().min(0),
   trafficOverviewData: z.array(z.object({
-      date: z.string(),
+      date: z.string().min(1, 'Date is required'),
       organic: z.coerce.number(),
       paid: z.coerce.number()
   })),
   topOrganicKeywordsData: z.array(z.object({
-      keyword: z.string(),
+      keyword: z.string().min(1, 'Keyword is required'),
       position: z.coerce.number().nullable(),
       volume: z.coerce.number(),
       cpc: z.coerce.number(),
@@ -40,15 +43,33 @@ const formSchema = z.object({
   }))
 });
 
+type FormSchemaType = z.infer<typeof formSchema>;
+
+
 interface ManualDataFormProps {
+  projectId: string | null;
   onDataUpdate: (data: Partial<AuditData>) => void;
+  onReportSave: (newReport: ManualReport) => void;
 }
 
-export function ManualDataForm({ onDataUpdate }: ManualDataFormProps) {
+const SubmitButton = () => {
+    const { pending } = useFormStatus();
+    return (
+         <Button type="submit" disabled={pending}>
+            {pending && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
+            Save Report
+        </Button>
+    )
+}
+
+export function ManualDataForm({ projectId, onDataUpdate, onReportSave }: ManualDataFormProps) {
   const { toast } = useToast();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const [state, formAction] = useActionState(saveManualReport, null);
+  
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      reportName: `Report ${new Date().toLocaleDateString()}`,
       authorityScore: 30,
       organicSearchTraffic: 3600,
       paidSearchTraffic: 126,
@@ -78,26 +99,56 @@ export function ManualDataForm({ onDataUpdate }: ManualDataFormProps) {
     name: "topOrganicKeywordsData"
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const preparedData: Partial<AuditData> = {
-        ...data,
-        topOrganicKeywordsData: data.topOrganicKeywordsData.map(k => ({...k, intent: ['C'], serp: false})) // Adding mock data for missing fields
+  useEffect(() => {
+    if (state?.success) {
+        toast({
+            title: "Report Saved",
+            description: "The manual report has been saved successfully.",
+        });
+    } else if (state?.message) {
+         toast({
+            variant: "destructive",
+            title: "Save Failed",
+            description: state.message,
+        });
     }
-    onDataUpdate(preparedData);
-    toast({
-        title: "Report Updated",
-        description: "The dashboard has been updated with the new data.",
-    })
+  }, [state, toast])
+
+  const onSubmit = (data: FormSchemaType) => {
+    if (!projectId) {
+        toast({ variant: "destructive", title: "Error", description: "No project selected." });
+        return;
+    }
+
+    const { reportName, ...auditDataValues } = data;
+    const preparedAuditData: AuditData = {
+      ...auditDataValues,
+      // Add any missing static fields here if needed
+      countryDistributionData: [], 
+      keywordsByIntentData: [],
+      mainOrganicCompetitorsData: [],
+      competitivePositioningData: [],
+      topOrganicKeywordsData: data.topOrganicKeywordsData.map(k => ({...k, intent: ['C'], serp: false}))
+    };
+
+    onDataUpdate(preparedAuditData);
+    
+    const formData = new FormData();
+    formData.append('reportName', reportName);
+    formData.append('projectId', projectId);
+    formData.append('auditData', JSON.stringify(preparedAuditData));
+
+    formAction(formData);
   };
 
   return (
-    <Card>
+    <Card className="w-full">
         <Collapsible>
             <CollapsibleTrigger asChild>
                 <CardHeader className="flex-row items-center justify-between cursor-pointer">
                     <div>
                         <CardTitle className="font-headline">Manual Report Data</CardTitle>
-                        <CardDescription>Click to expand and enter data to generate a custom report.</CardDescription>
+                        <CardDescription>Click to enter data and generate a custom report.</CardDescription>
                     </div>
                     <Button variant="ghost" size="sm">
                         <ChevronsUpDown className="h-4 w-4" />
@@ -107,7 +158,13 @@ export function ManualDataForm({ onDataUpdate }: ManualDataFormProps) {
             </CollapsibleTrigger>
             <CollapsibleContent>
                 <CardContent>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pt-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="reportName">Report Name</Label>
+                            <Input id="reportName" {...form.register('reportName')} />
+                            {form.formState.errors.reportName && <p className="text-sm font-medium text-destructive">{form.formState.errors.reportName.message}</p>}
+                        </div>
+
                         {/* Key Metrics */}
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div>
@@ -186,7 +243,7 @@ export function ManualDataForm({ onDataUpdate }: ManualDataFormProps) {
                             </Button>
                         </div>
 
-                        <Button type="submit">Generate Report</Button>
+                        <SubmitButton />
                     </form>
                 </CardContent>
             </CollapsibleContent>
